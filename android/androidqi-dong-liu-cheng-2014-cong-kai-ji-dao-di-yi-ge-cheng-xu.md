@@ -1,4 +1,4 @@
-# Android启动流程—从开机到第一个程序
+# Android 启动流程——从开机到第一个程序
 
 | Author | Younix |
 | ------------- |:-------------:|
@@ -8,7 +8,7 @@
 
 ## 概述
 
-总得来看有这样几个阶段：
+总得来看有这样五个阶段：
 1. BootROM 上电
 2. BootLoader 引导
 3. Linux 内核
@@ -24,12 +24,10 @@
 3. **Kernel 启动 swapper 进程**。即 idle 进程，pid = 0，系统初始化过程中的第一个进程，用于初始化 进程管理、内存管理、加载 Display、Camera Driver、Binder Driver 的工作。
 **Kernel 启动 init 进程**（用户进程的祖宗）。pid = 1，用来孵化用户空间的守护进程、HAL、开机动画等。
 **Kernel 启动 threadd 进程**（内核进程的祖宗）。pid = 2，创建内核工程线程 kworkder，软中断线程等。
-
-4. init 进程 fork 出 Daemon 进程：孵化出ueventd、logd、healthd、installd、adbd、lmkd 等用户守护进程；
+4. **init 进程 fork 出 Daemon 进程**：孵化出ueventd、logd、healthd、installd、adbd、lmkd 等用户守护进程；
 init 进程启动servicemanager(binder服务管家)、bootanim(开机动画)等重要服务;
 **init 进程孵化出Zygote进程**，Zygote进程是Android系统的第一个Java进程，Zygote是所有Java进程的父进程（Android 应用程序的祖宗），Zygote进程本身是由 init 进程孵化而来的。
-
-5. Zygote 孵化出 System Server 和 App。
+5. **Zygote 孵化出 System Server 和 App**。
 它是 Android 系统的核心进程，提供了应用程序生命周期管理，地理位置信息等各种 Service（这些 Service 同样需要注册到 Context Manager）。
 
 下面我们具体的一个个的来分析。
@@ -71,8 +69,8 @@ Bootloader 有很多，最常见的就是 uboot。
 init 进程是Linux系统中用户空间的第一个进程，进程号为1。
 它是 用户进程 的祖先。
 ### 4.1 关键路径
-init 进程  	/system/core/init
-init.rc 脚本 	/system/core/rootdir/init.rc
+init 进程 /system/core/init
+init.rc 脚本 /system/core/rootdir/init.rc
 readme.txt	/system/core/init/readme.txt
 
 ![](https://ws4.sinaimg.cn/large/ba061518gw1fashn2h1hlj20jn0cuaby.jpg)
@@ -90,12 +88,12 @@ readme.txt	/system/core/init/readme.txt
 5.5 创建 Zygote Socket //create_socket()
 
 init.rc 中启动的 Action 和 Service ：
-**on early-init**：设置init进程以及它创建的子进程的优先级，设置init进程的安全环境
-**on init**：设置全局环境，为cpu accounting创建cgroup(资源控制)挂载点
-**on fs**：挂载mtd分区
-**on post-fs**：改变系统目录的访问权限
-**on post-fs-data**：改变/data目录以及它的子目录的访问权限
-**on boot**：基本网络的初始化，内存管理等等
+**on early-init**：设置init进程以及它创建的子进程的优先级，设置init进程的安全环境。
+**on init**：设置全局环境，为cpu accounting创建cgroup(资源控制)挂载点。
+**on fs**：挂载mtd分区。
+**on post-fs**：改变系统目录的访问权限。
+**on post-fs-data**：改变/data目录以及它的子目录的访问权限。
+**on boot**：基本网络的初始化，内存管理等等。
 **service servicemanager**：启动系统管理器管理所有的本地服务，比如位置、音频、Shared preference等等…
 **service zygote**：启动zygote作为应用进程
 
@@ -116,14 +114,14 @@ Zygote 顾名思义，是所有 Android 应用的祖先。
 framework 层
 ```
 App_main.main
-    AndroidRuntime.start
-        startVm
-        startReg
-        ZygoteInit.main
-            registerZygoteSocket
-            preload
-            startSystemServer
-            runSelectLoop
+  AndroidRuntime.start
+    startVm
+    startReg
+    ZygoteInit.main
+      registerZygoteSocket
+      preload
+      startSystemServer
+      runSelectLoop
 ```
 
 ### 5.3 流程分析
@@ -138,9 +136,9 @@ Zygote是由init进程通过解析init.zygote.rc文件而创建的，zygote所�
 2. startVM。调用 JNI_CreateJavaVM 创建虚拟机。
 3. startReg。JNI 函数注册。
 
-#### 5.3.2 **虚拟机初始化之后 //ZygoteInit.java** 
+#### 5.3.2 **虚拟机初始化之后 //ZygoteInit.java**
 ZygoteInit 代码流程：
-1. 绑定套接字。接受 Activity  Manager 来的应用启动请求。
+1. 绑定套接字。接受 Activity Manager 来的应用启动请求。
 2. 加载 Android Framework 中的 class、res（drawable、xml信息、strings）到内存。
 Android 通过在 Zygote 创建的时候加载资源，生成信息链接，再有应用启动，fork 子进程和父进程共享信息，不需要重新加载，同时也共享 VM。
 3. 启动 System Server。因为我们的应用启动需要这些 server 的参与，所以需要先启动 System Server。接下来启动 ServerThread 来执行 Android Framework 服务，并通过 JNI 向 Context Manager 注册。
@@ -164,14 +162,16 @@ system_server进程，从源码角度划分为引导服务、核心服务、其�
 ## 七、引导结束
 System Servers 在内存中跑起来后，发送开机广播 “ACTION_BOOT_COMPLETED”。
 
+自此，我们就将 Android 设备启动流程梳理完毕啦。
 
-## 欢迎关注微信公众号 
+
+## 欢迎关注微信公众号
 **黑羊爱学习**
 **blacksheepgogogo**
 
 定期分享 嵌入式 Android/Linux 学习资料。
 不定期分享 个人职场心得 / 鸡汤 / 游记 / 书籍读后感。
 
-扫描以下二维码：
+快扫描以下二维码关注吧：
 ![](http://ww1.sinaimg.cn/large/ba061518gy1fjskczerf6j20p00f0jx7.jpg)
 
