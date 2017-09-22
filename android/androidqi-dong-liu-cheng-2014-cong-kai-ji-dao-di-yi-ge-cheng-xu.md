@@ -58,10 +58,10 @@ Bootloader 有很多，最常见的就是 uboot。
 ![](https://ws2.sinaimg.cn/large/ba061518gw1fasims09bzj20ja0aimyy.jpg)
 
 > kernel 的入口点是 stext，这是一个汇编函数。
-从stext开始kernel将会完成一系列通过汇编语言实现芯片级的初始化工作，并以静态定义的方式创建kernel的第一个kernel进程init_task，即 0号进程。
-然后跳转到kernel的第一个c语言函数start_kernel完成后续十分繁杂的kernel初始化工作（setup_arch，mm_init，sched_init，init_IRQ以及最为关键的rest_init等几个函数）
-在rest_init中创建了kernel的第二个kernel进程 kernel_init（1号进程）和第二个kernel进程kthreadd（2号进程），对于驱动工程来说，需要关注下kernel_init调用的do_basic_setup函数，其完成了系统驱动初始化工作。
-最后kernel_init通过调用run_init_process("/init”)，开始执行init程序，并从kernel进程转化为第一个用户进程。
+<br>从stext开始kernel将会完成一系列通过汇编语言实现芯片级的初始化工作，并以静态定义的方式创建kernel的第一个kernel进程init_task，即 0号进程。
+<br>然后跳转到kernel的第一个c语言函数start_kernel完成后续十分繁杂的kernel初始化工作（setup_arch，mm_init，sched_init，init_IRQ以及最为关键的rest_init等几个函数）
+<br>在rest_init中创建了kernel的第一个kernel进程 kernel_init（1号进程）和第二个kernel进程kthreadd（2号进程），对于驱动工程来说，需要关注下kernel_init调用的do_basic_setup函数，其完成了系统驱动初始化工作。
+<br>最后kernel_init通过调用run_init_process("/init”)，开始执行init程序，并从kernel进程转化为第一个用户进程。
 
 引用自：[Kernel 启动流程源码总结](http://blog.csdn.net/xichangbao/article/details/52971562)
 
@@ -81,22 +81,10 @@ readme.txt	/system/core/init/readme.txt
 2.生成设备驱动节点。//通过rc文件创建
 3.处理子进程的终止。//signal方式
 4.提供属性服务。 //start_property_service()
-5.创建 Zygote
-5.1 解析 init.zygote.rc //parse_service()
-5.2 启动 main 类型服务 //do_class_start()
-5.3 启动 zygote 服务 //service_start()
-5.4 创建 Zygote 进程 //fork()
-5.5 创建 Zygote Socket //create_socket()
+5.创建 Zygote <br>解析 init.zygote.rc //parse_service()<br>启动 main 类型服务 //do_class_start()<br>启动 zygote 服务 //service_start()<br>创建 Zygote 进程 //fork()<br>创建 Zygote Socket //create_socket()
 
-init.rc 中启动的 Action 和 Service ：
-**on early-init**：设置init进程以及它创建的子进程的优先级，设置init进程的安全环境。
-**on init**：设置全局环境，为cpu accounting创建cgroup(资源控制)挂载点。
-**on fs**：挂载mtd分区。
-**on post-fs**：改变系统目录的访问权限。
-**on post-fs-data**：改变/data目录以及它的子目录的访问权限。
-**on boot**：基本网络的初始化，内存管理等等。
-**service servicemanager**：启动系统管理器管理所有的本地服务，比如位置、音频、Shared preference等等…
-**service zygote**：启动zygote作为应用进程
+init.rc 中启动的 Action 和 Service ：<br>**on early-init**：设置init进程以及它创建的子进程的优先级，设置init进程的安全环境。<br>**on init**：设置全局环境，为cpu accounting创建cgroup(资源控制)挂载点。<br>**on fs**：挂载mtd分区。<br>**on post-fs**：改变系统目录的访问权限。<br>**on post-fs-data**：改变/data目录以及它的子目录的访问权限。<br>**on boot**：基本网络的初始化，内存管理等等。<br>**service servicemanager**：启动系统管理器管理所有的本地服务，比如位置、音频、Shared preference等等…
+<br>**service zygote**：启动zygote作为应用进程
 
 ![](https://ws2.sinaimg.cn/large/ba061518gw1fasilbde07j20h00cwmyz.jpg)
 
