@@ -1,7 +1,14 @@
 # Summary
 
+## Android
+
 * [Introduction](README.md)
-* [Android](chapter1.md)
-* [DeviceDriver](devicedriver.md)
-* [PortingDebug](portingdebug.md)
+
+## Android Debug
+
+## Laguage Tips
+
+## Linux Tips
+
+## DeviceDriver
 
