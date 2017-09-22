@@ -1,3 +1,4 @@
-# My Awesome Book
+# RockChip 123
 
-This file file serves as your book's preface, a great place to describe your book's content and ideas.
+采用 Gitbook 的方式来记录在 Rockchip 平台的 移植/调试 过程中碰到的问题。
+
