@@ -8,6 +8,8 @@
 
 ## Android Debug
 
+* [添加自定义开机动画后出现黑屏5s的问题](android-debug/tian-jia-zi-ding-yi-kai-ji-dong-hua-hou-chu-xian-hei-ping-5s-de-wen-ti.md)
+
 ## Device Porting
 
 ## Device Debug
