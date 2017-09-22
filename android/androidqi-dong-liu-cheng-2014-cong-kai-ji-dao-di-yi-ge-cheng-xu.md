@@ -22,7 +22,8 @@
 1. 板子上电后运行固化在 ROM 中的代码，加载 Bootloader 到 RAM。
 2. Bootloader 启动，引导进入 Linux 内核。
 3. **Kernel 启动 swapper 进程**。即 idle 进程，pid = 0，系统初始化过程中的第一个进程，用于初始化 进程管理、内存管理、加载 Display、Camera Driver、Binder Driver 的工作。
-</br>**Kernel 启动 init 进程**（用户进程的祖宗）。pid = 1，用来孵化用户空间的守护进程、HAL、开机动画等。
+</br>
+**Kernel 启动 init 进程**（用户进程的祖宗）。pid = 1，用来孵化用户空间的守护进程、HAL、开机动画等。
 </br>**Kernel 启动 threadd 进程**（内核进程的祖宗）。pid = 2，创建内核工程线程 kworkder，软中断线程等。
 4. **init 进程 fork 出 Daemon 进程**：孵化出ueventd、logd、healthd、installd、adbd、lmkd 等用户守护进程；
 init 进程启动servicemanager(binder服务管家)、bootanim(开机动画)等重要服务;
