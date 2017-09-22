@@ -83,8 +83,7 @@ readme.txt	/system/core/init/readme.txt
 4.提供属性服务。 //start_property_service()
 5.创建 Zygote <br>解析 init.zygote.rc //parse_service()<br>启动 main 类型服务 //do_class_start()<br>启动 zygote 服务 //service_start()<br>创建 Zygote 进程 //fork()<br>创建 Zygote Socket //create_socket()
 
-init.rc 中启动的 Action 和 Service ：<br>**on early-init**：设置init进程以及它创建的子进程的优先级，设置init进程的安全环境。<br>**on init**：设置全局环境，为cpu accounting创建cgroup(资源控制)挂载点。<br>**on fs**：挂载mtd分区。<br>**on post-fs**：改变系统目录的访问权限。<br>**on post-fs-data**：改变/data目录以及它的子目录的访问权限。<br>**on boot**：基本网络的初始化，内存管理等等。<br>**service servicemanager**：启动系统管理器管理所有的本地服务，比如位置、音频、Shared preference等等…
-<br>**service zygote**：启动zygote作为应用进程
+init.rc 中启动的 Action 和 Service ：<br>**on early-init**：设置init进程以及它创建的子进程的优先级，设置init进程的安全环境。<br>**on init**：设置全局环境，为cpu accounting创建cgroup(资源控制)挂载点。<br>**on fs**：挂载mtd分区。<br>**on post-fs**：改变系统目录的访问权限。<br>**on post-fs-data**：改变/data目录以及它的子目录的访问权限。<br>**on boot**：基本网络的初始化，内存管理等等。<br>**service servicemanager**：启动系统管理器管理所有的本地服务，比如位置、音频、Shared preference等等…<br>**service zygote**：启动zygote作为应用进程
 
 ![](https://ws2.sinaimg.cn/large/ba061518gw1fasilbde07j20h00cwmyz.jpg)
 
@@ -141,9 +140,7 @@ Zygote启动过程中会调用startSystemServer()，可知startSystemServer()函
 
 ![](https://ws4.sinaimg.cn/large/ba061518gw1fasig0fsj0j20qs0m4ac5.jpg)
 system_server进程，从源码角度划分为引导服务、核心服务、其他服务3类。
-引导服务(7个)：ActivityManagerService、PowerManagerService、LightsService、DisplayManagerService、PackageManagerService、UserManagerService、SensorService；
-核心服务(3个)：BatteryService、UsageStatsService、WebViewUpdateService；
-其他服务(70个+)：AlarmManagerService、VibratorService等。
+<br>引导服务(7个)：<br>ActivityManagerService、PowerManagerService、LightsService、DisplayManagerService、PackageManagerService、UserManagerService、SensorService；<br>核心服务(3个)：<br>BatteryService、UsageStatsService、WebViewUpdateService；<br>其他服务(70个+)：<br>AlarmManagerService、VibratorService等。
 
 
 参考：http://gityuan.com/2016/02/14/android-system-server/
