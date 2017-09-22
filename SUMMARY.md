@@ -1,14 +1,16 @@
-# Summary
+* [Introduction](README.md)
 
 ## Android
 
-* [Introduction](README.md)
-
 ## Android Debug
 
-## Laguage Tips
+## Device Porting
 
-## Linux Tips
+## Device Debug
 
-## DeviceDriver
+## Tips of Laguage
+
+## Tips of Linux
+
+
 
