@@ -1,12 +1,7 @@
 # Android repo 工具的基本用法
 
 ## repo 工具是何方神圣
-相信从事软件开发的大家都了解 git 版本控制工具。它是当之无愧的版本管理神器。<br>
-但是同样，它也有一些局限性。比如当我们的项目（比如 Android）过于庞大，需要构建很多个子仓库分别交给不同的开发者维护时。那用 git 便显得力不从心了。<br>
-于是 google 就琢磨着，咱能不能写个脚本来管理这么多个 git 仓库呢？<br>
-**repo** 于是应运而生。<br>
-它的**本质**便是 Python 脚本。<br>
-它的**作用**主要是用来下载、管理 Android 项目的软件仓库。
+相信从事软件开发的大家都了解 git 版本控制工具。它是当之无愧的版本管理神器。<br>但是同样，它也有一些局限性。比如当我们的项目（比如 Android）过于庞大，需要构建很多个子仓库分别交给不同的开发者维护时。那用 git 便显得力不从心了。<br>于是 google 就琢磨着，咱能不能写个脚本来管理这么多个 git 仓库呢？<br>**repo** 于是应运而生。<br>它的**本质**便是 Python 脚本。<br>它的**作用**主要是用来下载、管理 Android 项目的软件仓库。
 
 那么在这篇文章中，我们会学习了解到 repo 的以下用法：
 * init 初始化仓库
@@ -44,10 +39,7 @@ repo status
 ```
 repo sync
 ```
-下载新更改,并更新本地环境中的工作文件,如果不带参数,将同步所有的项目的所有文件。<br>
-当运行repo sync时,会执行以下操作:<br>
-如果之前未进行过同步,那么等同于git clone, 所有远程的分支都被复制到本地。<br>
-如果之前同步过,那么等同于:
+下载新更改,并更新本地环境中的工作文件,如果不带参数,将同步所有的项目的所有文件。<br>当运行repo sync时,会执行以下操作:<br>如果之前未进行过同步,那么等同于git clone, 所有远程的分支都被复制到本地。<br>如果之前同步过,那么等同于
 ```
 git remote update 
 git rebase origin/<BRANCH>
@@ -74,8 +66,7 @@ repo sync <project>
 <project groups="pdk-cw-fs,pdk-fs" name="android/device/common" path="device/common" remote="rk" revision="6482b0e4219edbbb3da2c6e77ce7c2ba22e55ba9" upstream="rk32/mid/6.0/develop"/>
 <project groups="pdk" name="android/device/generic/arm64" path="device/generic/arm64" revision="39249053f37b7f9633eb406af3dbedfea7bf8b3e" upstream="refs/tags/android-6.0.1_r63"/>
 ```
-比如我想要同步 RKDocs 项目中的内容。
-可以看到其 name 或者 path 字段为 android/RKDocs 和 RKDocs。
+比如我想要同步 RKDocs 项目中的内容。<br>可以看到其 name 或者 path 字段为 android/RKDocs 和 RKDocs。
 
 那么我们可以采用如下命令：
 ```
@@ -96,8 +87,7 @@ repo diff <project>
 ```
 repo download <target> <VersionID>
 ```
-下载特定的修改版本到本地。<br>
-比如 下载修改版本为 1234 的代码。
+下载特定的修改版本到本地。<br>比如 下载修改版本为 1234 的代码。
 ```
 repo download platform/frameworks/base 1234 
 ```
