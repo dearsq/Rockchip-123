@@ -9,6 +9,15 @@
 它的**作用**主要是用来下载、管理 Android 项目的软件仓库。
 
 那么在这篇文章中，我们会学习了解到 repo 的以下用法：
+* init 初始化仓库
+* status 显示状态
+* sync 同步整个项目
+* sync 同步单个项目
+* diff 显示版本差异
+* download 下载指定版本修改
+* start 创建新分支
+* prune 删除已经合并的项目
+
 
 ## init 初始化仓库
 `repo init -u URL`
@@ -77,7 +86,7 @@ repo sync RKDocs
 repo sync android/RKDocs
 ```
 
-## diff
+## diff 显示版本差异
 ```
 repo diff <project>
 ```
