@@ -4,7 +4,7 @@
 相信从事软件开发的大家都了解 git 版本控制工具。它是当之无愧的版本管理神器。<br>
 但是同样，它也有一些局限性。比如当我们的项目（比如 Android）过于庞大，需要构建很多个子仓库分别交给不同的开发者维护时。那用 git 便显得力不从心了。<br>
 于是 google 就琢磨着，咱能不能写个脚本来管理这么多个 git 仓库呢？<br>
-repo 于是应运而生。<br>
+**repo** 于是应运而生。<br>
 它的**本质**便是 Python 脚本。<br>
 它的**作用**主要是用来下载、管理 Android 项目的软件仓库。
 
@@ -35,9 +35,9 @@ repo status
 ```
 repo sync
 ```
-下载新更改,并更新本地环境中的工作文件,如果不带参数,将同步所有的项目的所有文件.
-当运行repo sync时,会执行以下操作:
-如果之前未进行过同步,那么等同于git clone, 所有远程的分支都被复制到本地.
+下载新更改,并更新本地环境中的工作文件,如果不带参数,将同步所有的项目的所有文件。<br>
+当运行repo sync时,会执行以下操作:<br>
+如果之前未进行过同步,那么等同于git clone, 所有远程的分支都被复制到本地。<br>
 如果之前同步过,那么等同于:
 ```
 git remote update 
@@ -87,8 +87,8 @@ repo diff <project>
 ```
 repo download <target> <VersionID>
 ```
-下载特定的修改版本到本地。
-比如 下载修改版本为 1234 的代码
+下载特定的修改版本到本地。<br>
+比如 下载修改版本为 1234 的代码。
 ```
 repo download platform/frameworks/base 1234 
 ```
@@ -99,7 +99,7 @@ repo start <branchname> <project>
 ```
 
 ## prune 删除已经合并的项目
-删除已经 merge 的 project
+删除已经 merge 的 project。
 ```
 repo prune <project>
 ```
