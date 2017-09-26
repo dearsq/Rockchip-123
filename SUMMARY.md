@@ -22,6 +22,11 @@
 ## Tips of Laguage
 
 ## Tips of Linux
+
 * [OS](tips-of-linux/Operate-System.md)
   * [passwd 文件格式详解](tips-of-linux/passwd-wen-jian-ge-shi-xiang-jie.md)
+
+## Tips of Learning
+
+* [Linux 平台嵌入式开发 101](tips-of-learning/linux-ping-tai-qian-ru-shi-kai-fa-101.md)
 
