@@ -22,6 +22,6 @@
 ## Tips of Laguage
 
 ## Tips of Linux
-* [OS](Operate-System.md)
+* [OS](tips-of-linux/Operate-System.md)
   * [passwd 文件格式详解](tips-of-linux/passwd-wen-jian-ge-shi-xiang-jie.md)
 
