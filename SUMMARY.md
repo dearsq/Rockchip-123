@@ -13,7 +13,8 @@
 * [添加自定义开机动画后出现黑屏5s的问题](android-debug/tian-jia-zi-ding-yi-kai-ji-dong-hua-hou-chu-xian-hei-ping-5s-de-wen-ti.md)
 
 ## Device Porting
-* Audio
+
+* [Audio](device-porting/audio.md)
   * [Linux 下的音频调试流程及工具](device-porting/linux-xia-de-yin-pin-diao-shi-liu-cheng-ji-gong-ju.md)
 
 ## Device Debug
