@@ -70,7 +70,7 @@ arecord -Dhw:0,1 -r8000 -f cd ./dukou.wmv
 
 ## 四、amixer 混音器
 alsamixer 是 Linux 音频架构 ALSA 工具中的一个。
-它是基于文本下的图形界面的，用于配置音频的各个参数。
+它是基于文本下的图形界面的，**用于配置音频的各个参数**。
 amixer 是 alsamixer 的命令行模式。
 
 值得一提的是当你使用 ALSA 的时候。按照默认设置，ALSA 启动时所有的输出频道都是静音的。因此，你可能能播放一个声音文件，但是却什么都听不到（播放程序可能暂时“冻住”了，但过了一会儿当文件静悄悄地播放完，又“解冻”了）。
@@ -154,7 +154,7 @@ numid=50,iface=MIXER,name='DAC L2 Mux'
 
 ### 4.3 amixer 设置某个参数
 amixer cget + 控制参数
-amixer cset + 控制参数 + “ " + 参数
+amixer cset + 控制参数 + " " + 参数
 
 #### 1）设置音量 value
 比如，如果要设置主音量：
@@ -163,7 +163,7 @@ numid=5,iface=MIXER,name=’PCM Volume’
 ```
 可以先看其当前的值
 ```
-# amixer cget numid=5,iface=MIXER,name=’PCM Volume’
+~# amixer cget numid=5,iface=MIXER,name=’PCM Volume’
 numid=5,iface=MIXER,name=’PCM Volume’
 ; type=INTEGER,access=rw—R–,values=2,min=0,max=27,step=0
 : values=27,27
@@ -171,7 +171,7 @@ numid=5,iface=MIXER,name=’PCM Volume’
 ```
 最大值为 27 ，假设要想设置为 25, 用 cset 去设置：
 ```
-# amixer cset numid=5,iface=MIXER,name=’PCM Volume’ 25
+~# amixer cset numid=5,iface=MIXER,name=’PCM Volume’ 25
 numid=5,iface=MIXER,name=’PCM Volume’
 ; type=INTEGER,access=rw—R–,values=2,min=0,max=27,step=0
 : values=25,25
@@ -180,7 +180,7 @@ numid=5,iface=MIXER,name=’PCM Volume’
 
 #### 2）打开/关闭 Mic 的 switch 
 ```
-# amixer cset numid=12,iface=MIXER,name=’Mic Supply Switch’ Off
+~# amixer cset numid=12,iface=MIXER,name=’Mic Supply Switch’ Off
 numid=12,iface=MIXER,name=’Mic Supply Switch’
 ; type=ENUMERATED,access=rw——,values=1,items=2
 ; Item #0 ‘On’
@@ -189,7 +189,7 @@ numid=12,iface=MIXER,name=’Mic Supply Switch’
 ```
 
 ### 4.4 alsactl 将混音器配置保存/读取
-这个程序能把当前的混音器设置存到一个文件中或者从文件中读出来。<br>当你用自己喜欢的混音程序调节满意之后，用 root 身份输入 `alsactl store` 。这个命令将把混音设置储存到 `/var/lib/alsa/asound.state` 中。<br>此后，你就能在一个启动脚本中调用 `alsactl restore` 来恢复设置。
+这个程序能把当前的混音器设置存到一个文件中或者从文件中读出来。<br>当你用自己喜欢的混音程序调节满意之后，用 root 身份输入 `alsactl store` 。<br>这个命令将把混音设置储存到 `/var/lib/alsa/asound.state` 中。<br>此后，你就能在一个启动脚本中调用 `alsactl restore` 来恢复设置。
 
 保存的格式如下
 ```
