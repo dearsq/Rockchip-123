@@ -15,7 +15,7 @@
 ## Device Porting
 
 * [Audio](device-porting/audio.md)
-  * [Linux 下的音频调试流程及工具](device-porting/linux-xia-de-yin-pin-diao-shi-liu-cheng-ji-gong-ju.md)
+  * [Linux 下音频调试（一）工具介绍](device-porting/audio/linux-xia-yin-pin-diao-shi-ff08-yi-ff09-gong-ju-jie-shao.md)
 
 ## Device Debug
 
