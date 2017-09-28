@@ -3,12 +3,12 @@
 | Author | Younix |
 | ------------- |:-------------:|
 | Platform | RK3399 |
-| Android Ver| Android6.0 |
-| Kernel Ver| Linux4.4.70 |
+| Android Version| Android6.0 |
+| Kernel Version| Linux4.4.70 |
 
 
 
-## 基本概念
+## 一、基本概念
 
 **DAI**：音频设备硬件接口 Digital Audio Interfaces ，包括 PCM、I2S、AC97。利用它来实现音频数据在 CPU 和 CodeC 之间的通信。
 
@@ -22,17 +22,18 @@
 
 linux 平台的音频调试工具有许多，如果你的 linux 系统比较老旧采用的是 OSS 驱动（或者利用 Alsa 对 OSS 兼容层）播放音频文件，那么你可以使用 play / rec 工具进行播放和录音。如果你的 linux 系统采用的是 Alsa 架构，你可以采用 aplay / arecord 进行播放 / 录音。
 
-另外这些工具均只能播放 .wav 格式的音频文件，并不能正确处理 MP3、OGG 等其他格式。
+另外这些工具均只能播放 voc, wav, raw or au 格式的音频文件，并不能正确处理 MP3、OGG 等其他格式。
 
 本文以 aplay、arecord、amixer 系列工具为例谈谈如何进行音频驱动的调试。
 
-## aplay 播放
+## 二、aplay 播放
 
 aplay 用于播放音频
-```
-#  列出声卡和数字音频设备
-root@linaro-alip:/home/linaro/Desktop# aplay -l 
 
+### 2.1 aplay -l 列出声卡和数字音频设备
+
+```
+root@linaro-alip:~# aplay -l 
 **** List of PLAYBACK Hardware Devices ****
 card 0: realtekrt5651co [realtek,rt5651-codec], device 0: ff880000.i2s-rt5651-aif1 rt5651-aif1-0 []
   Subdevices: 1/1
@@ -43,9 +44,11 @@ card 1: ROCKCHIPSPDIF [ROCKCHIP,SPDIF], device 0: ff870000.spdif-dit-hifi dit-hi
 card 2: HDMICODEC [HDMI-CODEC], device 0: ff8a0000.i2s-i2s-hifi i2s-hifi-0 []
   Subdevices: 1/1
   Subdevice #0: subdevice #0
+```
 
-# 播放
-aplay -D hw:0,0 -r8000 -f cd ./dukou.wav
+### 2.2 播放
+```
+root@linaro-alip:~# aplay -D hw:0,0 -r8000 -f cd ./dukou.wav
 
 # -D 参数用于指定音频设备 PCM
 # hw:0,0 表示 硬件 0 号声卡下的 0 号设备
@@ -53,18 +56,19 @@ aplay -D hw:0,0 -r8000 -f cd ./dukou.wav
 # -f 指定采样格式 cd/cdr/dat/S16_LE/S32_LE
 ```
 
-## arecord 录音
+## 三、arecord 录音
 arecord 用于录音
+### 3.1 arecord -l 列出声卡和数字音频设备
 ```
-arecord -Dhw:0,1 -r8000 -f cd ./dukou.wmv
-```
-```
-#  列出声卡和数字音频设备
 arecord -l 
 # 用法同 aplay 
 ```
+### 3.2 录音
+```
+arecord -Dhw:0,1 -r8000 -f cd ./dukou.wmv
+```
 
-## amixer 混音器
+## 四、amixer 混音器
 alsamixer 是 Linux 音频架构 ALSA 工具中的一个。
 它是基于文本下的图形界面的，用于配置音频的各个参数。
 amixer 是 alsamixer 的命令行模式。
@@ -73,7 +77,7 @@ amixer 是 alsamixer 的命令行模式。
 
 所以我们在调试时应该确保所调试的设备解除了静音，并且音量设置在合适的大小。
 
-### amixer cmd
+### 4.1 amixer cmd
 ```
 root@linaro-alip:~# amixer -h
 Usage: amixer <options> [command]
@@ -103,7 +107,7 @@ Available commands:
   cget cID        get control contents for one control
 ```
 
-### amixer contents 查看可以操作的接口
+### 4.2 amixer contents 查看可以操作的接口
 ```
 root@linaro-alip:~# amixer contents
 numid=11,iface=MIXER,name='Mono ADC Capture Volume'
@@ -148,7 +152,7 @@ numid=50,iface=MIXER,name='DAC L2 Mux'
 ```
 
 
-### amixer 设置某个参数
+### 4.3 amixer 设置某个参数
 amixer cget + 控制参数
 amixer cset + 控制参数 + “ " + 参数
 
@@ -184,7 +188,7 @@ numid=12,iface=MIXER,name=’Mic Supply Switch’
 : values=1
 ```
 
-### alsactl 将混音器配置保存/读取
+### 4.4 alsactl 将混音器配置保存/读取
 这个程序能把当前的混音器设置存到一个文件中或者从文件中读出来。<br>当你用自己喜欢的混音程序调节满意之后，用 root 身份输入 `alsactl store` 。这个命令将把混音设置储存到 `/var/lib/alsa/asound.state` 中。<br>此后，你就能在一个启动脚本中调用 `alsactl restore` 来恢复设置。
 
 保存的格式如下
@@ -212,5 +216,14 @@ state.realtekrt5651co {
                 value.0 31
                 value.1 31
                 comment {
-
+                        access 'read write'
+                        type INTEGER
+                        count 2
+                        range '0 - 39'
+                        dbmin -4650
+                        dbmax 1200
+                        dbvalue.0 0
+                        dbvalue.1 0
+                }
+        }
 ```
