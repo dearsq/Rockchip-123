@@ -16,7 +16,7 @@
 
 * [Audio](device-porting/audio.md)
   * [Linux 下音频调试（一）工具介绍](device-porting/audio/linux-xia-yin-pin-diao-shi-ff08-yi-ff09-gong-ju-jie-shao.md)
-  * Linux 下音频调试（二）调试流程
+  * [Linux 下音频调试（二）调试流程](device-porting/audio/linux-xia-yin-pin-diao-shi-ff08-er-ff09-diao-shi-liu-cheng.md)
 
 ## Device Debug
 
@@ -26,6 +26,7 @@
 
 * [OS](tips-of-linux/Operate-System.md)
   * [passwd 文件格式详解](tips-of-linux/passwd-wen-jian-ge-shi-xiang-jie.md)
+* [Read Linux Driver 0 to 1](tips-of-linux/read-linux-driver-0-to-1.md)
 
 ## Tips of Learning
 
