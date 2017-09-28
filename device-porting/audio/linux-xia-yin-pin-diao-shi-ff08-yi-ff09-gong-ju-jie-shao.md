@@ -1,4 +1,4 @@
-# Linux 下的音频调试（一）工具介绍
+# Linux 下音频调试（一）工具介绍
 
 | Author | Younix |
 | ------------- |:-------------:|
@@ -24,7 +24,9 @@ linux 平台的音频调试工具有许多，如果你的 linux 系统比较老�
 
 另外这些工具均只能播放 voc, wav, raw or au 格式的音频文件，并不能正确处理 MP3、OGG 等其他格式。
 
-本文以 aplay、arecord、amixer 系列工具为例谈谈如何进行音频驱动的调试。
+对于 Android 系统，大家还可以去了解 tinyalsa 系列工具，用法也是大同小异。这里不再赘述了。
+
+工欲善其事必先利其器，本文作为 音频调试部分的第一节，大家请跟着大黑一起了解一下 aplay、arecord、amixer 系列工具的使用方法吧。
 
 ## 二、aplay 播放
 
@@ -189,7 +191,7 @@ numid=12,iface=MIXER,name=’Mic Supply Switch’
 ```
 
 ### 4.4 alsactl 将混音器配置保存/读取
-这个程序能把当前的混音器设置存到一个文件中或者从文件中读出来。<br>当你用自己喜欢的混音程序调节满意之后，用 root 身份输入 `alsactl store` 。<br>这个命令将把混音设置储存到 `/var/lib/alsa/asound.state` 中。<br>此后，你就能在一个启动脚本中调用 `alsactl restore` 来恢复设置。
+这个程序能把当前的混音器设置存到一个文件中或者从文件中读出来。<br>当你用自己喜欢的混音程序调节满意之后，在 root 用户下输入 `alsactl store` 。这个命令将把混音设置储存到 `/var/lib/alsa/asound.state` 中。
 
 保存的格式如下
 ```
@@ -227,3 +229,25 @@ state.realtekrt5651co {
                 }
         }
 ```
+这样，我们就可以在一个启动脚本中调用 `alsactl restore` 来恢复设置。
+
+## 小结
+本文作为 音频调试部分的第一节，为大家介绍一下 aplay、arecord、amixer 系列调试工具。
+
+分别介绍了 `aplay`、`arecord`、`amixer`、`alsactl` 等命令的用法。
+
+在音频调试系列的后续文章中也将层层深入，陆续为大家带来 调试流程、驱动移植、源码分析 等内容。
+
+## 欢迎关注微信公众号 
+还等啥呢~ 快分享到朋友圈~
+让朋友一起关注
+
+**黑羊爱学习**<br>**blacksheepgogogo**
+
+定期分享 嵌入式 Android/Linux 学习资料。<br>不定期分享 个人职场心得 / 鸡汤 / 游记 / 书籍读后感。
+
+扫描以下二维码：
+![](http://ww1.sinaimg.cn/large/ba061518gy1fjskczerf6j20p00f0jx7.jpg)
+
+有任何建议或者意见欢迎直接在微信公众号中反馈。感谢您的支持。
+访问大黑个人站，请点击左下角**阅读原文**。

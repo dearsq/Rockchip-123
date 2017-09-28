@@ -4,7 +4,7 @@
 
 
 ## 欢迎关注微信公众号 
-黑羊爱学习<br>**blacksheepgogogo**
+**黑羊爱学习**<br>**blacksheepgogogo**
 
 定期分享 嵌入式 Android/Linux 学习资料。<br>不定期分享 个人职场心得 / 鸡汤 / 游记 / 书籍读后感。
 
