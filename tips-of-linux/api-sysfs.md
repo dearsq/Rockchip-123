@@ -68,8 +68,18 @@ struct sysfs_ops {
   ssize_t (*store)(struct kobject *,struct attribute *,const char *, size_t);  
 };  
 ```
+## sysfs 的基本单元结构
+`sysfs_dirent` 是组成 sysfs 单元的基本数据结构，它是sysfs 文件夹或文件在内存中的代表。表示文件类型。增删文件实际是处理 `sysfs_dirent 树`。
+**sysfs_dirent 保存结构**。
 
-### sysfs 其他的 API
+`inode`(index node)中保存了设备的主从设备号、一组文件操作函数和一组 inode 操作函数。
+**innode**保存文件信息。
+
+`dentry`(directory entry)的中文名称是目录项，是 Linux 文件系统中某个索引节点(inode)的链接。这个索引节点可以是文件，也可以是目录。
+**dentry** 保存链接。
+
+
+## sysfs 其他的 API
 
 ```c
 //创建工作队列，稍后调用 func。
@@ -88,4 +98,97 @@ sysfs_rename_dir()
 
 //将kobj对应的目录移到new_parent_kobj对应的目录下。
 sysfs_move_dir()
+
+
+//在kobj对应的目录下创建attr对应的属性文件
+int __must_check sysfs_create_file(struct kobject *kobj,const struct attribute *attr);  
+
+//修改attr对应的属性文件的读写权限。
+int __must_check sysfs_chmod_file(struct kobject *kobj, struct attribute *attr,mode_t mode); 
+
+//在kobj对应的目录下删除attr对应的属性文件。
+void sysfs_remove_file(struct kobject *kobj, const struct attribute *attr);  
+
+
+
+
+//在kobj目录下创建attr对应的二进制属性文件
+int __must_check sysfs_create_bin_file(struct kobject *kobj, struct bin_attribute *attr);  
+
+//在kobj目录下删除attr对应的二进制属性文件
+void sysfs_remove_bin_file(struct kobject *kobj, struct bin_attribute *attr);  
+
+
+
+//在kobj目录下创建指向target目录的软链接，name为软链接文件名称
+int __must_check sysfs_create_link(struct kobject *kobj, struct kobject *target, const char *name);  
+
+//与sysfs_create_link()功能相同，只是在软链接文件已存在时不会出现警告。
+int __must_check sysfs_create_link_nowarn(struct kobject *kobj,struct kobject *target, const char *name);  
+
+//删除kobj目录下名为name的软链接文件
+void sysfs_remove_link(struct kobject *kobj, const char *name);  
+
+
+//在kobj目录下创建一个属性集合，并显示集合中的属性文件。如果文件已存在，会报错。
+int __must_check sysfs_create_group(struct kobject *kobj, const struct attribute_group *grp);  
+
+//sysfs_update_group()在kobj目录下创建一个属性集合，并显示集合中的属性文件。文件已存在也不会报错。
+int sysfs_update_group(struct kobject *kobj,const struct attribute_group *grp);  
+
+//sysfs_remove_group()在kobj目录下删除一个属性集合，并删除集合中的属性文件。
+void sysfs_remove_group(struct kobject *kobj,const struct attribute_group *grp);  
+
+//sysfs_add_file_to_group()将一个属性attr加入kobj目录下已存在的的属性集合group。
+int sysfs_add_file_to_group(struct kobject *kobj, const struct attribute *attr, const char *group);
+
+//sysfs_remove_file_from_group()将属性attr从kobj目录下的属性集合group中删除。  
+void sysfs_remove_file_from_group(struct kobject *kobj,const struct attribute *attr, const char *group);  
+
+
+//增加目录parent_sd中名为name的目录或文件的引用计数
+struct sysfs_dirent *sysfs_get_dirent(struct sysfs_dirent *parent_sd,const unsigned char *name);
+
+//增加目录或文件的引用计数
+struct sysfs_dirent *sysfs_get(struct sysfs_dirent *sd);  
+
+//减少目录或文件的引用计数，并在降为零时删除相应的文件或目录，这种删除又会减少上层目录的引用计数
+void sysfs_put(struct sysfs_dirent *sd);  
+
+//是在sysfs崩溃时打印最后一个访问到的文件路径
+void sysfs_printk_last_file(void);
+
+//是在sysfs模块初始化时调用的
+int __must_check sysfs_init(void);  
+```
+
+## API sysfs_notify 
+
+### sysfs_notify
+实质是调用`sysfs_notify_dirent()`,用来唤醒在读写属性文件(sysfs节点)时因调用`select()`或`poll()`而阻塞的用户进程。
+
+```c
+/*
+@ kobj :内核调用sysfs_create_group/sysfs_create_file创建sysfs节点时的struct kobject对象
+@ dir:路径，所遇场景均使用 NULL
+@ attr:属性文件节点的名字，字符串
+*/
+void sysfs_notify(struct kobject *kobj, const char *dir, const char *attr);
+void sysfs_notify_dirent(struct sysfs_dirent *sd);
+```
+### poll
+用于 Userspace，查询是否可对设备进行无阻塞的访问，返回值大于0这可以访问。
+```c
+poll(struct pollfd fds[], nfds_t nfds, int timeout); 
+```
+
+### select
+用于 Kernel，查询是否可对设备进行无阻塞的访问。
+```c
+int select(int, fd_set*, fd_set*, fd_set*, struct timeval*);
+@int ：需要检查的文件描述符个数
+@fdset ：用来检查可读性的一组文件描述符
+@fdset：用来检查可写性的一组文件描述符
+@fdset：用来检查意外状态的文件描述符。(错误并不是意外状态)
+@timeval：NULL指针代表无限等待，否则是指向timeval结构的指针，代表最长等待时间。
 ```
