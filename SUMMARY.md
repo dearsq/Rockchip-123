@@ -27,6 +27,7 @@
 * [OS](tips-of-linux/Operate-System.md)
   * [passwd 文件格式详解](tips-of-linux/passwd-wen-jian-ge-shi-xiang-jie.md)
 * [Read Linux Driver 0 to 1](tips-of-linux/read-linux-driver-0-to-1.md)
+* [API sysfs](tips-of-linux/api-sysfs.md)
 
 ## Tips of Learning
 

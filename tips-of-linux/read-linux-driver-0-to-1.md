@@ -1,7 +1,4 @@
-
-
 ## Linux API
-
 
 ### 内存分配
 #### devm_kzalloc / devm_kfree
