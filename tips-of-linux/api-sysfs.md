@@ -70,17 +70,22 @@ struct sysfs_ops {
 ```
 
 ### sysfs 其他的 API
+
 ```c
 //创建工作队列，稍后调用 func。
 sysfs_schedule_callback()
-应用：通过工作队列回调的方式删除属性文件。（属性文件读写函数无法删除属性文件或者 kobject 目录，因为调用函数时是加锁的，删除也需要加锁）
+//应用：通过工作队列回调的方式删除属性文件。（属性文件读写函数无法删除属性文件或者 kobject 目录，因为调用函数时是加锁的，删除也需要加锁）
 int sysfs_schedule_callback(struct kobject *kobj, void (*func)(void *),void *data, struct module *owner);  
+
 //创建一个kobject对应的目录，目录名就是kobj->name。
 sysfs_create_dir()
+
 //删除kobj对应的目录。删除一个目录也会相应地删除目录下的文件及子目录。
 sysfs_remove_dir()
+
 //修改kobj对应目录的名称。
 sysfs_rename_dir()
+
 //将kobj对应的目录移到new_parent_kobj对应的目录下。
 sysfs_move_dir()
 ```
