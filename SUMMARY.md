@@ -35,3 +35,5 @@
 
 ## Draft
 
+* [Linux for RK3399 LCD 驱动添加笔记](draft/linux-for-rk3399-lcd-qu-dong-tian-jia-bi-ji.md)
+
