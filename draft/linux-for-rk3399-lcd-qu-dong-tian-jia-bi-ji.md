@@ -17,7 +17,7 @@ Documentation/devicetree/bindings/video/rockchip_fb.txt
 .
 ├── backlight    背光相关
 ├── fbdev        FB 框架
-│   └── core
+│   └── core     FB 核心代码
 │       ├── fbmem.c
 │       └── fbsysfs.c
 └── rockchip
@@ -40,7 +40,7 @@ Documentation/devicetree/bindings/video/rockchip_fb.txt
 ![](http://ww1.sinaimg.cn/large/ba061518gy1fk1kul1dyaj20em0mg41r.jpg)
 
 
-## RK FB 框架相关代码
+## RK FBDEV 框架相关代码
 ```
 drivers/video/fbdev/core/fbmem.c
 drivers/video/rockchip/rk_fb.c
