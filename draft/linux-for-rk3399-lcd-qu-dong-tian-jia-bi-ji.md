@@ -16,7 +16,7 @@ Documentation/devicetree/bindings/video/rockchip_fb.txt
 ➜  rockchip git:(master) ✗ tree ./driver/video/
 .
 ├── backlight    背光相关
-├── fbdev
+├── fbdev        FB 框架
 │   └── core
 │       ├── fbmem.c
 │       └── fbsysfs.c
@@ -36,7 +36,6 @@ Documentation/devicetree/bindings/video/rockchip_fb.txt
         ├── mipi_dsi.c
         └── mipi_dsi.h
 ```
-
 
 ![](http://ww1.sinaimg.cn/large/ba061518gy1fk1kul1dyaj20em0mg41r.jpg)
 
