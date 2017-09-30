@@ -126,14 +126,3 @@ obj-$(CONFIG_RK_TRSM) += transmitter/
 
 
 
-
-drivers/video/rockchip/screen/
-|_ lcd_mipi.c /* 屏参 dtsi 文件的解析 */
-
-```
-
-```
-
-
-
-
