@@ -98,8 +98,8 @@ Kernel Mode Setting
 由于 mode-setting 和内存管理密切相关 ———— framebuffer 基本就是 内存buffer ———— 故它和图像内存管理紧密集成。这也是为什么它被放到 DRM 模块而不是独立作为一个子系统的原因。
 
 #### KMS Driver
-为了破坏 DRM API 的向后兼容性，KMS 为 DRM Driver 提供了一个特殊的特性。任何 DRM Driver 在注册 DRM Core 的时候需要选择是否提供 DRIVER_MODESET 标志，用来表示是否支持 KMS API。
-支持的为了和传统的 DRM Driver 驱动区分往往被称为 KMS Driver。
+为了不破坏 DRM API 的向后兼容性，KMS 为 DRM Driver 提供了一个特殊的特性。任何 DRM Driver 在注册 DRM Core 的时候需要选择是否采用 DRIVER_MODESET 标志，用来表示是否支持 KMS API。
+支持 KMS API 的驱动为了和传统的 DRM Driver 驱动区分往往被称为 KMS Driver。
 
 
 
