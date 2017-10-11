@@ -15,8 +15,8 @@
 ## Device Porting
 
 * [Audio](device-porting/audio.md)
-  * [Linux 下音频调试（一）工具介绍](device-porting/audio/linux-xia-yin-pin-diao-shi-ff08-yi-ff09-gong-ju-jie-shao.md)
-  * [Linux 下音频调试（二）调试流程](device-porting/audio/linux-xia-yin-pin-diao-shi-ff08-er-ff09-diao-shi-liu-cheng.md)
+  * [Linux 下音频调试（一）工具介绍](device-porting/audio/linux-audio-debug-1-tools.md)
+  * [Linux 下音频调试（二）调试流程](device-porting/audio/linux-audio-debug-2-sop.md)
 
 ## Device Debug
 
@@ -35,8 +35,10 @@
 
 ## Draft
 
-* [Linux for RK3399 LCD 驱动添加笔记](draft/linux-for-rk3399-lcd-qu-dong-tian-jia-bi-ji.md)
-* [Linux DRM \(一\) Display Server](draft/rk-drm.md)
-* [Linux DRM \(二\) 软件架构](draft/linux-drm-4e8c29-ruan-jian-jia-gou.md)
+* [RK3399 Mipi LCD Driver 代码分析](draft/rk3399-mipi-lcd-driver.md)
+* [Linux DRM \(四\) Mipi LCD 移植调试](draft/linux-drm-4-rk-drm-mipi-lcd-porting.md)
+* [Linux DRM \(一\) Display Server 历史](draft/rk-drm-1-display-server-history.md)
+* [Linux DRM \(二\) 软件架构](draft/linux-drm-2-software-architecture.md)
+* [Linux DRM \(三\) RK 平台 DRM 代码分析](draft/linux-drm-3-rk-drm-driver.md)
 * [Linux Graphic Subsytem 笔记](draft/linux-graphic-subsytem-bi-ji.md)
 

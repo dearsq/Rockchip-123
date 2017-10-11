@@ -1,4 +1,4 @@
-# Android for RK3399 LCD Driver 分析
+# RK3399 Mipi LCD Driver 代码分析
 
 KernelVersion: 4.4.70
 

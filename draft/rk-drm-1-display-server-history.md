@@ -1,4 +1,4 @@
-# Linux 下的 DRM（一）Display Server 
+# Linux 下的 DRM（一）Display Server 历史
 
 ## 一、Display Server
 
@@ -78,7 +78,7 @@ DRM 获得对 Video Card 的独占访问权限，它负责初始化和维护命�
 DRM 到现在已经涵盖了以前由用户空间程序处理的很多功能，比如 帧缓存区的管理和模式设置，内存共享对象和内存同步。其中一些拓展具有特定的名称，比如图形执行管理器 GEM 或者内核模式设置 KMS，这些都是属于 DRM 子系统。
 DRM 同时也负责处理 GPUs 切换的问题。
 
-在下一章，我们会开始介绍 DRM 的软件架构。
+在下一章，我们会开始介绍 Linux 源码中 DRM 的软件架构。
 
 参考文章：
 https://en.wikipedia.org/wiki/X_Window_System
