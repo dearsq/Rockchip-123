@@ -91,7 +91,7 @@ Kernel Mode Setting
 为了解决这些问题，mode-setting 被单独放到了 Kernel 中，准确的说是 DRM 模块中。
 然后，包括 X Server 在内的每个进程都可以命令内核来实现 mode-setting 操作，内核也会确保操作的一致性。这些加入 DRM 模块的新的内核 API 和 代码所执行的 mode-setting 的操作被称为 **KMS**。
 
-它有太多好处了，第一个就是从 Kernel （console、fbdev）和 Userspace（X Server DDX Driver） 干掉了那些重复的 mode-setting 的代码。第二就是对于图形操作系统不再需要关心 mode-setting 部分代码的编写了。第三就是因为提供了这种单一集中式的模式管理，console 和 X Server 不同实例的切换变得更加容易了。第四就是 mode-setting 放到内核后，可以从启动过程就开始使用它（这个在曾经也会导致闪烁问题）。
+它有太多好处了，第一个就是从 Kernel （console、fbdev）和 Userspace（X Server DDX Driver）干掉了那些重复的 mode-setting 的代码。第二就是对于图形操作系统不再需要关心 mode-setting 部分代码的编写了。第三就是因为提供了这种单一集中式的模式管理，console 和 X Server 不同实例的切换变得更加容易了。第四就是 mode-setting 放到内核后，可以从启动过程就开始使用它（这个在曾经也会导致闪烁问题）。
 
 另外，因为 KMS 是内核的一部分，它也就可以去使用 kernel space 的很多资源（比如中断）。因为交由内核去管理了，在 suspend/resume 后的模式恢复变得更简单了。内核还让新显示设备的热插拔更加容易。
 
