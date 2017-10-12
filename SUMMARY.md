@@ -17,6 +17,8 @@
 * [Audio](device-porting/audio.md)
   * [Linux 下音频调试（一）工具介绍](device-porting/audio/linux-audio-debug-1-tools.md)
   * [Linux 下音频调试（二）调试流程](device-porting/audio/linux-audio-debug-2-sop.md)
+* [PCIe](device-porting/pcie.md)
+  * [mini PCIe  调试步骤](device-porting/minipcie-porting.md)
 
 ## Device Debug
 

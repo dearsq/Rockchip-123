@@ -1,13 +1,16 @@
 # Linux DRM (二) 软件架构
 
 在《Linux DRM (一) Display Server 历史》我们了解了 DRM 诞生的历史缘由。
-本篇我们再由浅入深，深入代码来看看 DRM 的软件架构。
+本篇我们再由浅入深，拆分 DRM 框架来看看它的软件架构。
 
-## 使用 DRM 访问 Video Card
-![](http://ww1.sinaimg.cn/large/ba061518gy1fke2korjhij20m80dd3z0.jpg)
+## 整体概览
+使用 DRM 访问 Video Card
+>![](http://ww1.sinaimg.cn/large/ba061518gy1fke2korjhij20m80dd3z0.jpg)
+没有 DRM 时，用户空间进程访问 GPU 的方式
+![](http://ww1.sinaimg.cn/large/ba061518gy1fke2ld7wgoj20m80de0td.jpg)
+有 DRM 后，用户空间访问 GPU 的方式
 
-> ![](http://ww1.sinaimg.cn/large/ba061518gy1fke2ld7wgoj20m80de0td.jpg)
-图自 wikipedia
+
 
 ## DRM 软件架构
 ### 设备文件 cardX
