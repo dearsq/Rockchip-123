@@ -1,7 +1,6 @@
 # Summary
 
 * [Introduction](README.md)
-* PCIe
 
 ## Android
 
@@ -22,6 +21,7 @@
   * [Linux DRM \(一\) Display Server 历史](draft/rk-drm-1-display-server-history.md)
 * [PCIe](device-porting/pcie.md)
   * [mini PCIe  转 SATA 小板\(ASM1061\)调试](device-porting/pcie/minipcie-sata-porting.md)
+  * PCIe 驱动分析
 
 ## Device Debug
 
@@ -36,7 +36,7 @@
 
 ## Tips of Learning
 
-* [Linux 平台嵌入式开发 101](tips-of-learning/linux-ping-tai-qian-ru-shi-kai-fa-101.md)
+* [Linux 平台嵌入式开发 101](tips-of-learning/linux-learning-101.md)
 
 ## Draft
 
@@ -45,4 +45,5 @@
 * [Linux DRM \(二\) 软件架构](draft/linux-drm-2-software-architecture.md)
 * [Linux DRM \(三\) RK 平台 DRM 代码分析](draft/linux-drm-3-rk-drm-driver.md)
 * [Linux Graphic Subsytem 笔记](draft/linux-graphic-subsytem-bi-ji.md)
+* [一声抱歉](draft/a_sorry_20171022.md)
 
