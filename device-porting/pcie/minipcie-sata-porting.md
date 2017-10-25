@@ -174,7 +174,7 @@ index 7daa9b7..97b7cd8 100755
 
 ## 四、调试问题汇总
 
-### PCIe 供电
+### 4.1 PCIe 供电
 PCIe 供电没有打开的情况下，需要在 dts 添加 power supply：
 ```
 index 4763727..677ed9d 100644
@@ -221,7 +221,7 @@ index 4763727..677ed9d 100644
 
 ```
 
-### mount 失败
+### 4.2 mount 失败
 我在手动挂载硬盘的时候，碰到了这样的问题。
 ```
 [  167.457458] F2FS-fs (sda1): Magic Mismatch, valid(0xf2f52010) - read(0x0)
@@ -230,4 +230,27 @@ index 4763727..677ed9d 100644
 这是因为默认对硬盘的文件系统不支持。
 利用电脑尝试将硬盘格式化为 Fat 格式 或者 ext4 格式的系统后，重新 Mount ，问题解决。
 
+### 4.3 自动挂载无效
+刚修改完 fstab 的时候，编译打包烧录进机器发现无法自动挂载。
+检查机器根目录下的 fstab.rk30board.bootmode.emmc 文件，发现我添加的 for pcie 的信息并没有添加成功。
+对应 out/target/product/rk3399_mid/root/fstab* 文件中确实没有我的修改信息。
+
+进一步去 device/rockchip/rk3399 下搜索 fstab 文件的拷贝规则。
+在 device.mk 中查到结果。
+
+```
+ 55 ifeq ($(BUILD_WITH_FORCEENCRYPT),true)
+ 56 PRODUCT_COPY_FILES += \
+ 57     $(LOCAL_PATH)/fstab.rk30board.bootmode.forceencrypt.unknown:root/fstab.rk30board.bootmode.unknown     \
+ 58     $(LOCAL_PATH)/fstab.rk30board.bootmode.forceencrypt.emmc:root/fstab.rk30board.bootmode.emmc
+ 59 else
+ 60 PRODUCT_COPY_FILES += \
+ 61     $(LOCAL_PATH)/fstab.rk30board.bootmode.unknown:root/fstab.rk30board.bootmode.unknown \
+ 62     $(LOCAL_PATH)/fstab.rk30board.bootmode.emmc:root/fstab.rk30board.bootmode.emmc
+ 63 endif
+```
+是因为对于 mid 工程 有定义`BUILD_WITH_FORCEENCRYPT `
+当定义这个宏的时候，根目录下采用的是  `fstab.rk30board.bootmode.forceencrypt.emmc`，会将其拷贝到机器根目录下并重命名为 `fstab.rk30board.bootmode.emmc`。
+
+所以应该在 `fstab.rk30board.bootmode.forceencrypt.emmc` 文件中修改，而我是想当然的在 `fstab.rk30board.bootmode.emmc` 中修改的。
 
