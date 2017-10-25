@@ -238,17 +238,18 @@ index 4763727..677ed9d 100644
 进一步去 device/rockchip/rk3399 下搜索 fstab 文件的拷贝规则。
 在 device.mk 中查到结果。
 
+```bash
+55 ifeq ($(BUILD_WITH_FORCEENCRYPT),true)
+56 PRODUCT_COPY_FILES += \
+57     $(LOCAL_PATH)/fstab.rk30board.bootmode.forceencrypt.unknown:root/fstab.rk30board.bootmode.unknown  \
+58     $(LOCAL_PATH)/fstab.rk30board.bootmode.forceencrypt.emmc:root/fstab.rk30board.bootmode.emmc
+59 else
+60 PRODUCT_COPY_FILES += \
+61     $(LOCAL_PATH)/fstab.rk30board.bootmode.unknown:root/fstab.rk30board.bootmode.unknown \
+62     $(LOCAL_PATH)/fstab.rk30board.bootmode.emmc:root/fstab.rk30board.bootmode.emmc
+63 endif
 ```
- 55 ifeq ($(BUILD_WITH_FORCEENCRYPT),true)
- 56 PRODUCT_COPY_FILES += \
- 57     $(LOCAL_PATH)/fstab.rk30board.bootmode.forceencrypt.unknown:root/fstab.rk30board.bootmode.unknown     \
- 58     $(LOCAL_PATH)/fstab.rk30board.bootmode.forceencrypt.emmc:root/fstab.rk30board.bootmode.emmc
- 59 else
- 60 PRODUCT_COPY_FILES += \
- 61     $(LOCAL_PATH)/fstab.rk30board.bootmode.unknown:root/fstab.rk30board.bootmode.unknown \
- 62     $(LOCAL_PATH)/fstab.rk30board.bootmode.emmc:root/fstab.rk30board.bootmode.emmc
- 63 endif
-```
+
 是因为对于 mid 工程 有定义`BUILD_WITH_FORCEENCRYPT `
 当定义这个宏的时候，根目录下采用的是  `fstab.rk30board.bootmode.forceencrypt.emmc`，会将其拷贝到机器根目录下并重命名为 `fstab.rk30board.bootmode.emmc`。
 
