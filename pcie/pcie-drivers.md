@@ -11,6 +11,21 @@ PCI device driver 是我们需要完成/移植的，比如网卡驱动、PCIe转
 
 ## PCI 驱动框架
 
-这里假设大家对 Linux 系统有一定程度的了解，比如字符设备、块设备、设备驱动程序的标准接口 `file_ops`、设备驱动程序的标准结构。
-基于此来介绍一些 PCIe 设备的驱动框架。
 
+
+## 参考文章
+浅谈Linux PCI设备驱动（一）：http://blog.csdn.net/linuxdrivers/article/details/5849698
+
+PCIe wikipedia：
+https://en.wikipedia.org/wiki/PCI_Express
+
+第1章 PCI总线的基本知识
+http://blog.sina.com.cn/s/blog_6472c4cc0100qbvw.html
+
+LDD 12.1.1 PCI 寻址
+https://www.kancloud.cn/kancloud/ldd3/61020
+
+
+
+Android6.0 MountService和vold详解（一）Mountservice的初始化
+http://blog.csdn.net/kc58236582/article/details/50428741
