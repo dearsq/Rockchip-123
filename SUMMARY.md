@@ -33,6 +33,7 @@
 
 * [OS](tips-of-linux/Operate-System.md)
   * [passwd 文件格式详解](tips-of-linux/passwd-wen-jian-ge-shi-xiang-jie.md)
+  * [fstab 文件格式和解析代码分析](tips-of-linux/fstab_introduce.md)
 * [Read Linux Driver 0 to 1](tips-of-linux/read-linux-driver-0-to-1.md)
 * [API sysfs](tips-of-linux/api-sysfs.md)
 * [Linux 驱动程序框架](linux-driver-framework.md)
