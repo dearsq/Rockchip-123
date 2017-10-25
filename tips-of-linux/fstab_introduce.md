@@ -8,11 +8,12 @@ Kernel: 4.4
 Version: v2017.04
 
 ## 一、格式说明
+以 RK3399 的 Android 系统为例。
+我们看看根目录下的 fstab.rk30board 文件。
 ```
 <src> <mount point>  <filesystem type> <mount flags parameters>     <fs_mgr_flags> 
 /dev/.. /mnt/internal_sd  vfat               defaults         voldmanaged=internal_sd:14,nomulated
 ```
-
 
 ### 1.1 src 
 表示 待挂载的设备节点路径
@@ -158,6 +159,10 @@ fstab文件 将其中的内容存在名为 fstab 的结构体中。
 ### 2.5 fs_mgr_mount_all
 其代码在 `.system/core/fs_mgr/fs_mgr.c` 这里不再进一步分析。
 
+
+
+## 参考文章
+/etc/fstab 参数详解及如何设置开机自动挂载: http://blog.csdn.net/eurus_5bb67476/article/details/77510802
 
 
 
