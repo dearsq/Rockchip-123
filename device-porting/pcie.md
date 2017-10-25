@@ -43,7 +43,8 @@ PCI主设备最少需要49根线，从设备最少需要47根线，剩下的线�
 
 不需要上拉的信号有 AD[31:0], C/BE[3:0], PAR, IDSEL, CLK
 
-## mini PCIe
+## 其他
+### mini PCIe 接口
 mini PCIe 是基于 PCIe 协议的。
 主设备兼容 PCIe 和 USB2.0 连接，可以使用两种标准。
 
@@ -54,3 +55,10 @@ mini PCIe 是基于 PCIe 协议的。
 
 尽管和 mini PCIe 外形尺寸相同，但是不一定和 mini PCIe 电气特性兼容。
 这种变体通过 保留和未保留某些引脚 实现 SATA 和 IDE 接口直通，只保留 USB、接地线，有时候仍然保留 PCIe X1 总线。
+
+### 固态硬盘的两种接口
+固态硬盘 SSD 有两种类型的物理接口规格（插座标准），原来的 SATA 接口和 现在的 M.2 接口。
+
+M.2 也叫作 NGFF，有两种接口模式，socket2 和 socket3;
+socket2 硬件接口对应的是 bkey，总线标准是 sata。传输标准也是 AHCI。
+socket3 硬件接口对应的是 mkey，总线标准是 pcie。传输标准有两种 NVME 和 AHCI。

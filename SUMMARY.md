@@ -1,13 +1,14 @@
 # Summary
 
 * [Introduction](README.md)
-* PCIe
 
 ## Android
 
 * [添加自定义开机动画\(视频\)](android/tian-jia-zi-ding-yi-kai-ji-dong-753b28-shi-989129.md)
-* [Android启动流程—从开机到第一个程序](android/androidqi-dong-liu-cheng-2014-cong-kai-ji-dao-di-yi-ge-cheng-xu.md)
+* [Android 启动流程—从开机到第一个程序](android/androidqi-dong-liu-cheng-2014-cong-kai-ji-dao-di-yi-ge-cheng-xu.md)
 * [Android repo 工具基本用法](android/android-repo-gong-ju-ji-ben-yong-fa.md)
+* [Android Disk System](android/android_disk_system.md)
+  * [Vold1](android/android_disk_system/vold1.md)
 
 ## Android Debug
 
@@ -22,6 +23,7 @@
   * [Linux DRM \(一\) Display Server 历史](draft/rk-drm-1-display-server-history.md)
 * [PCIe](device-porting/pcie.md)
   * [mini PCIe  转 SATA 小板\(ASM1061\)调试](device-porting/pcie/minipcie-sata-porting.md)
+  * [PCIe 驱动分析](pcie/pcie-drivers.md)
 
 ## Device Debug
 
@@ -33,6 +35,7 @@
   * [passwd 文件格式详解](tips-of-linux/passwd-wen-jian-ge-shi-xiang-jie.md)
 * [Read Linux Driver 0 to 1](tips-of-linux/read-linux-driver-0-to-1.md)
 * [API sysfs](tips-of-linux/api-sysfs.md)
+* [Linux 驱动程序框架](linux-driver-framework.md)
 
 ## Tips of Learning
 
