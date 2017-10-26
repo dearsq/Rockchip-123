@@ -4,7 +4,7 @@
 本篇我们再由浅入深，拆分 DRM 框架来看看它的软件架构。
 
 ## 一、整体概览
-使用 DRM 访问 Video Card
+使用 DRM 访问 Video Card （图自 wikipedia)：
 >![](http://ww1.sinaimg.cn/large/ba061518gy1fke2korjhij20m80dd3z0.jpg)
 没有 DRM 时，用户空间进程访问 GPU 的方式
 ![](http://ww1.sinaimg.cn/large/ba061518gy1fke2ld7wgoj20m80de0td.jpg)
@@ -25,7 +25,7 @@ libdrm 被创建以用于方便用户空间和 DRM 子系统的联系。它仅�
 使用 libdrm 这个库不仅仅避免了将内核接口直接暴露给用户空间，也有代码复用等常见优点。
 
 ### 2.3 DRM 代码结构
-两个部分：通用的 DRM Core 和适配于不同类型硬件的 DRM Driver。
+分为两个部分：通用的 DRM Core 和适配于不同类型硬件的 DRM Driver。
 DRM Core 提供了不同 DRM 驱动程序可以注册的基本框架，
 并且为用户空间提供了具有通用，独立于硬件功能的最小 ioctl 集合。
 DRM Driver 实现了 API 的硬件依赖部分。
@@ -104,9 +104,9 @@ Kernel Mode Setting
 为了不破坏 DRM API 的向后兼容性，KMS 为 DRM Driver 提供了一个特殊的特性。任何 DRM Driver 在注册 DRM Core 的时候需要选择是否采用 DRIVER_MODESET 标志，用来表示是否支持 KMS API。
 支持 KMS API 的驱动为了和传统的 DRM Driver 驱动区分往往被称为 KMS Driver。
 
+#### 3.2.4 KMS 设备模式
 
-KMS device model[edit]
-KMS models and manages the output devices as a series of abstract hardware blocks commonly found on the display output pipeline of a display controller. These blocks are:[47]
+KMS 负责塑造和管理输出设备，将他们抽象为一系列的硬件块（这些硬件块常常会在显示控制器的显示输出管道上）。These blocks are:[47]
 CRTCs: each CRTC (from CRT Controller[48][33]) represents a scanout engine of the display controller, pointing to a scanout buffer (framebuffer).[47] The purpose of a CRTC is to read the pixel data currently in the scanout buffer and generate from it the video mode timing signal with the help of a PLL circuit.[49] The number of CRTCs available determines how many independent output devices can the hardware handle at the same time, so in order to use multi-head configurations at least one CRTC per display device is required.[47] Two —or more— CRTCs can also work in clone mode if they scan out from the same framebuffer to send the same image to several output devices.[49][48]
 Connectors: a connector represents where the display controller sends the video signal from a scanout operation to be displayed. Usually, the KMS concept of a connector corresponds to a physical connector (VGA, DVI, FPD-Link, HDMI, DisplayPort, S-Video ...) in the hardware where an output device (monitor, laptop panel, ...) is permanently or can temporarily be attached. Information related to the current physically attached output device —such as connection status, EDID data, DPMS status or supported video modes— is also stored within the connector.[47]
 Encoders: the display controller must encode the video mode timing signal from the CRTC using a format suitable for the intended connector.[47] An encoder represents the hardware block able to do one of these encodings. Examples of encodings —for digital outputs— are TMDS and LVDS; for analog outputs such as VGA and TV out, specific DAC blocks are generally used. A connector can only receive the signal from one encoder at a time,[47] and each type of connector only supports some encodings. There also might be additional physical restrictions by which not every CRTC is connected to every available encoder, limiting the possible combinations of CRTC-encoder-connector.
