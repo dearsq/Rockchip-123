@@ -47,7 +47,7 @@
 
 * [RK3399 Mipi LCD Driver 代码分析](draft/rk3399-mipi-lcd-driver.md)
 * [Linux DRM \(四\) Mipi LCD 移植调试](draft/linux-drm-4-rk-drm-mipi-lcd-porting.md)
-* [Linux DRM \(二\) 软件架构](draft/linux-drm-2-software-architecture.md)
+* [Linux DRM \(二\) 基本概念](draft/linux-drm-2-base-concepts.md)
 * [Linux DRM \(三\) RK 平台 DRM 代码分析](draft/linux-drm-3-rk-drm-driver.md)
 * [Linux Graphic Subsytem 笔记](draft/linux-graphic-subsytem-bi-ji.md)
 

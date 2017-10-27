@@ -1,9 +1,29 @@
 # Linux DRM (二) 基本概念
 
 在《Linux DRM (一) Display Server 历史》我们了解了 DRM 诞生的历史缘由。
-本篇我们再由浅入深，拆分 DRM 框架来看看它的软件架构。
+本篇我们再朝 DRM 走几步，先介绍几个 DRM 的基本概念
 
-## 一、整体概览
+## 一、楔子
+
+上篇文章中我们有讲过 DRM 是 linux 下的图形渲染架构，用来管理显示输出、buffer 分配的。
+/ioctl 等标准接口，应用程序可以直接操纵 drm 的 ioctl 或者是用 framebuffer 提供的接口进行显示相关操作。
+后来大家觉得这样太 low 了，干脆封装成一个库吧。于是 libdrm 诞生了，它是一个库，其中提供了一系列友好的控制封装，让我们可以更加方便的进行显示控制。
+
+要弄明白 DRM 是怎么把用户的绘图输出到显示屏上，我们先弄懂这几个概念：
+
+* Framebuffer
+* CRTC
+* Encoder
+* Connector
+* Display Device(LCD)
+
+## 
+DRM 在源码中的架构 (图自 Mark.Yao）：
+
+![](https://markyzq.gitbooks.io/rockchip_drm_integration_helper/content/zh/picture/drm.png)
+
+
+
 使用 DRM 访问 Video Card （图自 wikipedia)：
 >![](http://ww1.sinaimg.cn/large/ba061518gy1fke2korjhij20m80dd3z0.jpg)
 没有 DRM 时，用户空间进程访问 GPU 的方式
@@ -11,8 +31,26 @@
 有 DRM 后，用户空间访问 GPU 的方式
 
 
-
 ## 二、基本概念
+### Framebuffer 
+它是一块内存区域，也可以被理解为一块画布，驱动和应用层都能访问它。画画之前需要将它格式化，我们需要设定你要画油画还是国画（色彩模式，比如 RGB24，YUV 等），画布需要多大（分辨率）。
+
+### CRTC
+直译为 阴极摄像管上下文，是显示输出的上下文，你可以把它理解为画画的架子。它对内连接 Framebuffer 地址，对外连接 Encoder。
+它会印刻你画布（Framebuffer）上的内容，传给 Encoder。
+
+![](http://ww1.sinaimg.cn/large/ba061518ly1fkx39mievyj20o5092gmf.jpg)
+
+### Encoder 
+直译为 编码器。它的作用就是将内存的pixel像素 编码（转换）为显示器所需要的信号。
+
+你可以把它的作用想象为现在要将你的画在全世界不同的显示设备（Display Device）上显示，自然需要将其转化为不同的电信号，比如 DVID、VGA、YPbPr、CVBS、Mipi、EDP 等。
+
+所以我们需要这样一个 Encoder 来进行信号转换的工作。
+
+### Conector
+直译为 连接器。它代表连接的显示设备，它被抽象为一个数据结构，其中存放的信息有 设备的 EDID、DPMS 连接状态 等。
+
 ### 2.1 设备文件 cardX
 DRM 处于内核空间，这意味着用户空间需要通过系统调用来申请它的服务。
 不过 DRM 并没有定义它自己的系统调用。相反，它遵循“Everything is file”的原则，通过文件系统，在 `/dev/dri/` 目录下暴露了 GPU 的访问方式。
@@ -106,8 +144,11 @@ Kernel Mode Setting
 
 #### 3.2.4 KMS 设备模式
 
-KMS 负责塑造和管理输出设备，将他们抽象为一系列的硬件块（这些硬件块常常会在显示控制器的显示输出管道上）。These blocks are:[47]
-CRTCs: each CRTC (from CRT Controller[48][33]) represents a scanout engine of the display controller, pointing to a scanout buffer (framebuffer).[47] The purpose of a CRTC is to read the pixel data currently in the scanout buffer and generate from it the video mode timing signal with the help of a PLL circuit.[49] The number of CRTCs available determines how many independent output devices can the hardware handle at the same time, so in order to use multi-head configurations at least one CRTC per display device is required.[47] Two —or more— CRTCs can also work in clone mode if they scan out from the same framebuffer to send the same image to several output devices.[49][48]
+KMS 负责塑造和管理输出设备，将他们抽象为一系列的硬件块（这些硬件块常常会在显示控制器的显示输出管道上）。
+
+这些块包括有：
+CRTCs：每个 CRTC（来自 CRT 控制器）代表显示控制器的扫描引擎，指向 framebuffer。 CRTC 的目标是读取当前扫描缓冲区的像素数据并借助于PLL电路从其生成视频模式定时信号。
+The number of CRTCs available determines how many independent output devices can the hardware handle at the same time, so in order to use multi-head configurations at least one CRTC per display device is required.[47] Two —or more— CRTCs can also work in clone mode if they scan out from the same framebuffer to send the same image to several output devices.[49][48]
 Connectors: a connector represents where the display controller sends the video signal from a scanout operation to be displayed. Usually, the KMS concept of a connector corresponds to a physical connector (VGA, DVI, FPD-Link, HDMI, DisplayPort, S-Video ...) in the hardware where an output device (monitor, laptop panel, ...) is permanently or can temporarily be attached. Information related to the current physically attached output device —such as connection status, EDID data, DPMS status or supported video modes— is also stored within the connector.[47]
 Encoders: the display controller must encode the video mode timing signal from the CRTC using a format suitable for the intended connector.[47] An encoder represents the hardware block able to do one of these encodings. Examples of encodings —for digital outputs— are TMDS and LVDS; for analog outputs such as VGA and TV out, specific DAC blocks are generally used. A connector can only receive the signal from one encoder at a time,[47] and each type of connector only supports some encodings. There also might be additional physical restrictions by which not every CRTC is connected to every available encoder, limiting the possible combinations of CRTC-encoder-connector.
 Planes: a plane is not a hardware block but a memory object containing a buffer from which a scanout engine (a CRTC) is fed. The plane that holds the framebuffer is called the primary plane, and each CRTC must have one associated,[47] since it's the source for the CRTC to determine the video mode —display resolution (width and height), pixel size, pixel format, refresh rate, etc.—. A CRTC might have also cursor planes associated to it if the display controller supports hardware cursor overlays, or secondary planes if it's able to scan out from additional hardware overlays and compose or blend "on the fly" the final image sent to the output device.[33]
