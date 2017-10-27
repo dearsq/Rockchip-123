@@ -32,14 +32,17 @@ DRM 在源码中的架构 (图自 Mark.Yao）：
 
 
 ## 二、基本概念
+
+![](http://ww1.sinaimg.cn/large/ba061518ly1fkx39mievyj20o5092gmf.jpg)
+
+
+
 ### Framebuffer 
 它是一块内存区域，也可以被理解为一块画布，驱动和应用层都能访问它。画画之前需要将它格式化，我们需要设定你要画油画还是国画（色彩模式，比如 RGB24，YUV 等），画布需要多大（分辨率）。
 
 ### CRTC
 直译为 阴极摄像管上下文，是显示输出的上下文，你可以把它理解为画画的架子。它对内连接 Framebuffer 地址，对外连接 Encoder。
 它会印刻你画布（Framebuffer）上的内容，传给 Encoder。
-
-![](http://ww1.sinaimg.cn/large/ba061518ly1fkx39mievyj20o5092gmf.jpg)
 
 ### Encoder 
 直译为 编码器。它的作用就是将内存的pixel像素 编码（转换）为显示器所需要的信号。
@@ -50,6 +53,8 @@ DRM 在源码中的架构 (图自 Mark.Yao）：
 
 ### Conector
 直译为 连接器。它代表连接的显示设备，它被抽象为一个数据结构，其中存放的信息有 设备的 EDID、DPMS 连接状态 等。
+
+### Planer
 
 ### 2.1 设备文件 cardX
 DRM 处于内核空间，这意味着用户空间需要通过系统调用来申请它的服务。
