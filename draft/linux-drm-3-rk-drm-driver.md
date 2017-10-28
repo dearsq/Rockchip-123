@@ -1,9 +1,53 @@
+# DRM 代码分析
+
+
 ### 2.1 设备文件 cardX
 DRM 处于内核空间，这意味着用户空间需要通过系统调用来申请它的服务。
 不过 DRM 并没有定义它自己的系统调用。相反，它遵循“Everything is file”的原则，通过文件系统，在 `/dev/dri/` 目录下暴露了 GPU 的访问方式。
-DRM 会检测每个 GPU，并生成对应的 DRM 设备，创建设备文件 `/dev/dri/cardX`与 GPU 相接。
+DRM 会检测每个 GPU，并生成对应的 DRM 设备，创建设备文件 `/dev/dri/cardX`与 GPU 相接。X 为 0-15 的数值，默认是 Card0。
 
 用户空间的程序如果希望访问 GPU 则必须打开该文件，并使用 ioctl 与 DRM 通信。不同的 ioctl 对应 DRM API 的不同功能。
+
+### 2.2 用户空间的内存操作
+
+我们定义一个外部的内存结构来更好的描述如何进行 userspace 的 drm 操作。
+首先使用到 DRM 相关操作的时候需要引用 `drm.h`。
+
+```
+#include <drm.h>
+struct bo {
+   int fd;
+   void *ptr;
+   size_t size;
+   size_t offset;
+   size_t pitch;
+   unsigned handle;
+};
+```
+#### 2.2.1 获取设备节点
+```
+bo->fd = open("/dev/dri/card0"),O_RDWR,0);
+```
+
+#### 2.2.2 分配内存空间
+```
+struct drm_mode_create_dumb arg;
+int handle, size, pitch;
+int ret;
+memset(&arg, 0, sizeof(arg));
+arg.bpp = bpp;
+arg.width = width;
+arg.height = height;
+ret = drmIoctl(bo->fd, DRM_IOCTL_MODE_CREATE_DUMB, &arg);
+if (ret) {
+    fprintf(stderr, "failed to create dumb buffer: %s\n", strerror(errno));
+    return ret;
+}
+bo->handle = arg.handle;
+bo->size = arg.size;
+bo->pitch = arg.pitch;
+```
+
 
 ### 2.2 DRM libdrm
 libdrm 被创建以用于方便用户空间和 DRM 子系统的联系。它仅仅只提供了一些函数的包装（C)，这些函数是为 DRM API 的每一个 ioctl、常量、结构体 而写。
