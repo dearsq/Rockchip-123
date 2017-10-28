@@ -1,4 +1,4 @@
-# Linux DRM (二) 基本概念
+# Linux DRM (二) 基本概念和特性
 
 在《Linux DRM (一) Display Server 历史》我们了解了 DRM 诞生的历史缘由。
 本篇我们朝着 DRM 本尊再走几步，先介绍几个 DRM 的基本概念
