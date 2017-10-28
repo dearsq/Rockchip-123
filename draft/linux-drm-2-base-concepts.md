@@ -1,15 +1,15 @@
 # Linux DRM (二) 基本概念
 
 在《Linux DRM (一) Display Server 历史》我们了解了 DRM 诞生的历史缘由。
-本篇我们再朝 DRM 走几步，先介绍几个 DRM 的基本概念
+本篇我们朝着 DRM 本尊再走几步，先介绍几个 DRM 的基本概念
 
 ## 一、楔子
 
 上篇文章中我们有讲过 DRM 是 linux 下的图形渲染架构，用来管理显示输出、buffer 分配的。
-/ioctl 等标准接口，应用程序可以直接操纵 drm 的 ioctl 或者是用 framebuffer 提供的接口进行显示相关操作。
+应用程序可以直接操纵 drm 的 ioctl 或者是用 framebuffer 提供的接口进行显示相关操作。
 后来大家觉得这样太 low 了，干脆封装成一个库吧。于是 libdrm 诞生了，它是一个库，其中提供了一系列友好的控制封装，让我们可以更加方便的进行显示控制。
 
-要弄明白 DRM 是怎么把用户的绘图输出到显示屏上，我们先弄懂这几个概念：
+要弄明白 DRM 是怎么把用户的绘图输出到显示屏上，我们绕不开了解这几个概念：
 
 * Framebuffer
 * CRTC
@@ -17,81 +17,37 @@
 * Connector
 * Display Device(LCD)
 
-## 
-DRM 在源码中的架构 (图自 Mark.Yao）：
 
-![](https://markyzq.gitbooks.io/rockchip_drm_integration_helper/content/zh/picture/drm.png)
-
-
-
-使用 DRM 访问 Video Card （图自 wikipedia)：
->![](http://ww1.sinaimg.cn/large/ba061518gy1fke2korjhij20m80dd3z0.jpg)
-没有 DRM 时，用户空间进程访问 GPU 的方式
-![](http://ww1.sinaimg.cn/large/ba061518gy1fke2ld7wgoj20m80de0td.jpg)
-有 DRM 后，用户空间访问 GPU 的方式
-
-
-## 二、基本概念
+## 二、DRM 涉及的基本概念
 
 ![](http://ww1.sinaimg.cn/large/ba061518ly1fkx39mievyj20o5092gmf.jpg)
 
 
 
-### Framebuffer 
-它是一块内存区域，也可以被理解为一块画布，驱动和应用层都能访问它。画画之前需要将它格式化，我们需要设定你要画油画还是国画（色彩模式，比如 RGB24，YUV 等），画布需要多大（分辨率）。
+### 2.1 DRM Framebuffer 
+它是一块内存区域，我把它理解为一块画布，驱动和应用层都能访问它。画画之前需要将它格式化，我们需要设定你要画油画还是国画（色彩模式，比如 RGB24，YUV 等），画布需要多大（分辨率）。
 
-### CRTC
-直译为 阴极摄像管上下文，是显示输出的上下文，你可以把它理解为画画的架子。它对内连接 Framebuffer 地址，对外连接 Encoder。
-它会印刻你画布（Framebuffer）上的内容，传给 Encoder。
+### 2.2 CRTC
+直译为 阴极摄像管上下文。我要说它的作用是读取当前扫描缓冲区的像素数据并借助于PLL电路从其生成视频模式定时信号。你可能就开始嘟囔着抱怨听不懂了。简单点，说话的方式简单点，简单的来说他就是显示输出的上下文，我把它理解为扫描仪。它对内连接 Framebuffer 地址，对外连接 Encoder。
+它会扫描你画布（Framebuffer）上的内容，叠加上 Planes 的内容，传给 Encoder。
 
-### Encoder 
-直译为 编码器。它的作用就是将内存的pixel像素 编码（转换）为显示器所需要的信号。
+### 2.3 Planes
+直译为 平面。它和 framebuffer 一样是内存地址。它的作用是干什么呢？想象这样一个场景，笔者正在很不专心地一边看动作大片一边写文章。动作大片每一帧的变化都很大，需要全幅更新，写完章半天挤不出一个字，基本上不需要更新。笔者的顽皮将显卡的使用拉上了两个极端。一种是全幅高速更新的 Video Mode，一种是文字交互这种小范围的 Graphics Mode。此时轮到 Planes 出马了，它给 Video 刷新提供了高速通道，使 Video 单独为一个图层，可以叠加在 Graphic 上或之下，并具有缩放等功能。
 
-你可以把它的作用想象为现在要将你的画在全世界不同的显示设备（Display Device）上显示，自然需要将其转化为不同的电信号，比如 DVID、VGA、YPbPr、CVBS、Mipi、EDP 等。
+看看本节开始的那张图，Planes 是可以有多个的，所以最后供扫描仪（CRTC）扫描的画（图像）实际上往往是Framebuffer 和 Planes 的组合（Blending）。
 
-所以我们需要这样一个 Encoder 来进行信号转换的工作。
+### 2.4 Encoder 
+直译为 编码器。它的作用就是将内存的 pixel 像素 编码（转换）为显示器所需要的信号。
 
-### Conector
-直译为 连接器。它代表连接的显示设备，它被抽象为一个数据结构，其中存放的信息有 设备的 EDID、DPMS 连接状态 等。
+你可以把它的作用想象为现在要将你的画在全世界不同的显示设备（Display Device）上显示，自然需要将其转化为不同的电信号，比如 DVID、VGA、YPbPr、CVBS、Mipi、eDP 等。
 
-### Planer
+所以我们需要这样一个 Encoder 来进行信号转换的工作。它和 CRTC 之间的交互就是我们所说的 ModeSetting，其中包含了前面提供的色彩模式、还有时序（Timing）等。
 
-### 2.1 设备文件 cardX
-DRM 处于内核空间，这意味着用户空间需要通过系统调用来申请它的服务。
-不过 DRM 并没有定义它自己的系统调用。相反，它遵循“Everything is file”的原则，通过文件系统，在 `/dev/dri/` 目录下暴露了 GPU 的访问方式。
-DRM 会检测每个 GPU，并生成对应的 DRM 设备，创建设备文件 `/dev/dri/cardX`与 GPU 相接。
+### 2.5 Connector
+直译为 连接器。Connector 常常对应于物理连接器 (VGA, DVI, FPD-Link, HDMI, DisplayPort, S-Video ...) 他会连接将一个物理显示输出设备 (monitor, laptop panel, ...) 。
+与当前物理连接的输出设备相关的信息（如连接状态，EDID数据，DPMS状态或支持的视频模式）也存储在 Connector 内。
 
-用户空间的程序如果希望访问 GPU 则必须打开该文件，并使用 ioctl 与 DRM 通信。不同的 ioctl 对应 DRM API 的不同功能。
 
-### 2.2 DRM libdrm
-libdrm 被创建以用于方便用户空间和 DRM 子系统的联系。它仅仅只提供了一些函数的包装（C)，这些函数是为 DRM API 的每一个 ioctl、常量、结构体 而写。
-使用 libdrm 这个库不仅仅避免了将内核接口直接暴露给用户空间，也有代码复用等常见优点。
-
-### 2.3 DRM 代码结构
-分为两个部分：通用的 DRM Core 和适配于不同类型硬件的 DRM Driver。
-DRM Core 提供了不同 DRM 驱动程序可以注册的基本框架，
-并且为用户空间提供了具有通用，独立于硬件功能的最小 ioctl 集合。
-DRM Driver 实现了 API 的硬件依赖部分。
-它提供了没有被 DRM core 覆盖的其余 ioctl 的实现，它也可以拓展 API，提供额外的 ioctl。比如某个特定的 DRM Driver 提供了一个增强的 API ，用户空间的 libdrm 也需要以额外的 libdrm-driver 拓展，用来使用这些额外的 ioctl。
-
-### 2.4 DRM API
-DRM Core 向用户空间应用程序导出了多个接口，让相应的 libdrm 包装成函数后来使用。
-DRM Driver 导出的特定设备的接口，可以通过 ioctls 和 sysfs 来供用户空间使用。
-
-### 2.5 DRM-Master 和 DRM-Auth
-DRM API 中有几个 ioctl 由于并发问题仅限于用户空间的单个进程使用。
-为了实现这种限制，将 DRM 设备分为 Master 和 Auth。
-上述的那些 ioctl 只能被 DRM-Master 的进程调用。
-打开了 `/dev/dri/cardX` 的进程的文件句柄会被标志为 master，特别是第一个掉哟该 `SET_MASTER` ioctl 的进程。如果不是 DRM-Master 的进程在使用这些限制 ioctl 的时候会返回错误。进程也可以通过 `DROP_MASTER` ioctl 放弃 Master 角色，来让其他进程变成 Master。
-
-X Server 或者其他的 Display Server 通常会是他们所管理的 DRM 设备的 DRM-Master 进程。当 DRM 设备启动的时候哦，这些 Display Server 打开设备节点，获取 DRM-Master 权限，直到关闭设备。
-
-对于其他的用户空间进程，还有一种办法可以获得 DRM 设备的这些 受限权限，这就是 DRM-Auth。它是一种针对 DRM 设备的验证方式，用来证明该进程已经获得了 DRM-Master 对于他们去访问受限 ioctls 的许可。
-
-步骤：
-1. DRM Client 使用 GET_MAGIC ioctl 从 DRM 设备获取一个 32bit整型的 token。并通过任何方式（通常是 IPC）传递给 DRM-Master。
-2. DRM-Master 进程使用 AUTH_MAGIC ioctl 返回 token 给 DRM 设备。
-3. 设备将 DRM-Master 所给的 token 和 Auth 的进行对比。通过的话就赋予进程文件句柄特殊的权限。
 
 ## 三、DRM 中的特性
 
@@ -147,26 +103,28 @@ Kernel Mode Setting
 为了不破坏 DRM API 的向后兼容性，KMS 为 DRM Driver 提供了一个特殊的特性。任何 DRM Driver 在注册 DRM Core 的时候需要选择是否采用 DRIVER_MODESET 标志，用来表示是否支持 KMS API。
 支持 KMS API 的驱动为了和传统的 DRM Driver 驱动区分往往被称为 KMS Driver。
 
-#### 3.2.4 KMS 设备模式
+#### 3.2.4 KMS Device Mode
 
-KMS 负责塑造和管理输出设备，将他们抽象为一系列的硬件块（这些硬件块常常会在显示控制器的显示输出管道上）。
+KMS 负责塑造和管理输出设备，将他们抽象为一系列的硬件模块（这些硬件模块常常会在显示控制器的显示输出管道上）。
+这些模块我们前面都有介绍，CRTC、Planes、Encoder、Connector 。
+下面是 Wikipedia 上面的谷歌翻译版本：
 
-这些块包括有：
 CRTCs：每个 CRTC（来自 CRT 控制器）代表显示控制器的扫描引擎，指向 framebuffer。 CRTC 的目标是读取当前扫描缓冲区的像素数据并借助于PLL电路从其生成视频模式定时信号。
-The number of CRTCs available determines how many independent output devices can the hardware handle at the same time, so in order to use multi-head configurations at least one CRTC per display device is required.[47] Two —or more— CRTCs can also work in clone mode if they scan out from the same framebuffer to send the same image to several output devices.[49][48]
-Connectors: a connector represents where the display controller sends the video signal from a scanout operation to be displayed. Usually, the KMS concept of a connector corresponds to a physical connector (VGA, DVI, FPD-Link, HDMI, DisplayPort, S-Video ...) in the hardware where an output device (monitor, laptop panel, ...) is permanently or can temporarily be attached. Information related to the current physically attached output device —such as connection status, EDID data, DPMS status or supported video modes— is also stored within the connector.[47]
-Encoders: the display controller must encode the video mode timing signal from the CRTC using a format suitable for the intended connector.[47] An encoder represents the hardware block able to do one of these encodings. Examples of encodings —for digital outputs— are TMDS and LVDS; for analog outputs such as VGA and TV out, specific DAC blocks are generally used. A connector can only receive the signal from one encoder at a time,[47] and each type of connector only supports some encodings. There also might be additional physical restrictions by which not every CRTC is connected to every available encoder, limiting the possible combinations of CRTC-encoder-connector.
-Planes: a plane is not a hardware block but a memory object containing a buffer from which a scanout engine (a CRTC) is fed. The plane that holds the framebuffer is called the primary plane, and each CRTC must have one associated,[47] since it's the source for the CRTC to determine the video mode —display resolution (width and height), pixel size, pixel format, refresh rate, etc.—. A CRTC might have also cursor planes associated to it if the display controller supports hardware cursor overlays, or secondary planes if it's able to scan out from additional hardware overlays and compose or blend "on the fly" the final image sent to the output device.[33]
-Atomic Display[edit]
-In recent years there has been an ongoing effort to bring atomicity to some regular operations pertaining the KMS API, specifically to the mode setting and page flipping operations.[33][50] This enhanced KMS API is what is called Atomic Display (formerly known as atomic mode-setting and atomic or nuclear pageflip).
-The purpose of the atomic mode-setting is to ensure a correct change of mode in complex configurations with multiple restrictions, by avoiding intermediate steps which could lead to an inconsistent or invalid video state;[50] it also avoids risky video states when a failed mode-setting process has to be undone ("rollback").[51]:9 Atomic mode-setting allows to know beforehand if certain specific mode configuration is appropriate, by providing mode testing capabilities.[50] When an atomic mode is tested and its validity confirmed, it can be applied with a single indivisible (atomic) commit operation. Both test and commit operations are provided by the same new ioctl with different flags.
-Atomic page flip on the other hand allows to update multiple planes on the same output (for instance the primary plane, the cursor plane and maybe some overlays or secondary planes) all synchronized within the same VBLANK interval, ensuring a proper display without tearing.[51]:9,14[50] This requirement is especially relevant to mobile and embedded display controllers, that tend to use multiple planes/overlays to save power.
-The new atomic API is built upon the old KMS API. It uses the same model and objects (CRTCs, encoders, connectors, planes, ...), but with an increasing number of object properties that can be modified.[50] The atomic procedure is based on changing the relevant properties to build the state that we want to test or commit. The properties we want to modify depend on whether we want to do a mode-setting (mostly CRTCs, encoders and connectors properties) or page flipping (usually planes properties). The ioctl is the same for both cases, being the difference the list of properties passed with each one.[52]
-Render nodes[edit]
-In the original DRM API, the DRM device /dev/dri/cardX is used for both privileged (modesetting, other display control) and non-privileged (rendering, GPGPU compute) operations.[9] For security reasons, opening the associated DRM device file requires special privileges "equivalent to root-privileges".[53] This leads to an architecture where only some reliable user space programs (the X server, a graphical compositor, ...) have full access to the DRM API, including the privileged parts like the modeset API. The remainder user space applications that want to render or make GPGPU computations should be granted by the owner of the DRM device ("DRM Master") through the use of a special authentication interface.[54] Then the authenticated applications can render or make computations using a restricted version of the DRM API without privileged operations. This design imposes a severe constraint: there must always be a running graphics server (the X Server, a Wayland compositor, ...) acting as DRM-Master of a DRM device so that other user space programs can be granted to use the device, even in cases not involving any graphics display like GPGPU computations.[53][54]
-The "render nodes" concept try to solve these scenarios by splitting the DRM user space API in two interfaces, one privileged and another non-privileged, and using separated device files (or "nodes") for each one.[9] For every GPU found, its corresponding DRM driver —if it supports the render nodes feature— creates a device file /dev/dri/renderDX, called the render node, in addition to the primary node /dev/dri/cardX.[54][9] Clients that use a direct rendering model and applications that want to take advantage of the computing facilities of a GPU, can do it without requiring additional privileges by simply opening any existing render node and dispatching GPU operations using the limited subset of the DRM API supported by those nodes —provided they have file system permissions to open the device file. Display servers, compositors and any other program that requires the modeset API or any other privileged operation must open the standard primary node that grants access to the full DRM API and use it as usual. Render nodes restricted API explicitly disallow the GEM flink operation to prevent buffer sharing using insecure GEM global names; only PRIME (DMA-BUF) file descriptors can be used to share buffers with another client, including the graphics server.[9][54]
+CRTC 的数量决定了硬件可以同时处理多少个独立的输出设备，因此为了使用多头配置，每个显示设备至少需要一个 CRTC。
+两个或多个CRTC也可以在克隆模式下工作，如果它们扫描的是相同的帧缓冲区，便可以将相同的图像发送到多个输出设备。
+
+Connectors: 连接器表示显示控制器从要显示的扫描输出操作发送视频信号的位置。
+通常，KMS 中 Connectors 对应于物理连接器
+(VGA, DVI, FPD-Link, HDMI, DisplayPort, S-Video ...) 他会连接将一个物理显示输出设备 (monitor, laptop panel, ...) 。
+与当前物理连接的输出设备相关的信息（如连接状态，EDID数据，DPMS状态或支持的视频模式）也存储在连接器内。
+
+Encoders: 显示控制器必须使用适合于预期连接器的格式 对 来自CRTC的视频模式定时信号 进行编码。编码器代表能够执行其中一个编码的硬件块。 连接器一次只能从一个编码器接收信号，每种类型的连接器只支持一些编码。 还可能会有其他的物理限制，并不是每个CRTC连接到每个可用的编码器，限制了CRTC编码器连接器的可能组合。
+
+Planes: plane 不是硬件块，而是包含供给扫描引擎（CRTC）的缓冲器的内存对象。 保存帧缓冲区的平面称为主平面，每个CRTC必须有一个关联的，因为它是 CRTC 确定参数的来源。参数包括，视频模式 - 显示分辨率（宽和高），像素大小，像素格式，刷新率等。
 
 
-
-
+## 参考文章
+wikipedia drm：https://en.wikipedia.org/wiki/Direct_Rendering_Manager
+landley drm：http://www.landley.net/kdocs/htmldocs/drm.html
+ubuntu drm kms：http://manpages.ubuntu.com/manpages/zesty/en/man7/drm-kms.7.html
 
