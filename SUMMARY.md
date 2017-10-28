@@ -21,6 +21,7 @@
   * [Linux 下音频调试（二）调试流程](device-porting/audio/linux-audio-debug-2-sop.md)
 * [DRM](device-porting/drm.md)
   * [Linux DRM \(一\) Display Server 历史](draft/rk-drm-1-display-server-history.md)
+  * [Linux DRM \(二\) 基本概念](draft/linux-drm-2-base-concepts.md)
 * [PCIe](device-porting/pcie.md)
   * [mini PCIe  转 SATA 小板\(ASM1061\)调试](device-porting/pcie/minipcie-sata-porting.md)
   * [PCIe 驱动分析](pcie/pcie-drivers.md)
@@ -47,7 +48,6 @@
 
 * [RK3399 Mipi LCD Driver 代码分析](draft/rk3399-mipi-lcd-driver.md)
 * [Linux DRM \(四\) Mipi LCD 移植调试](draft/linux-drm-4-rk-drm-mipi-lcd-porting.md)
-* [Linux DRM \(二\) 基本概念](draft/linux-drm-2-base-concepts.md)
 * [Linux DRM \(三\) RK 平台 DRM 代码分析](draft/linux-drm-3-rk-drm-driver.md)
 * [Linux Graphic Subsytem 笔记](draft/linux-graphic-subsytem-bi-ji.md)
 
