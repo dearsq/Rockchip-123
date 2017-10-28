@@ -1,5 +1,156 @@
 # DRM 代码分析
 
+## 源码文件
+
+![](http://ww1.sinaimg.cn/large/ba061518ly1fky0lv0ulnj20o70njaco.jpg)
+
+## component framework
+在讲述启动过程之前，先简单了解一下 component  framework。
+
+因为 drm下挂了许多的设备, 启动顺序经常会引发各种问题:
+1. 一个驱动完全有可能因为等另一个资源的准备, 而probe deferral, 导致顺序不定
+2. 子设备没有加载好, 主设备就加载了, 导致设备无法工作
+3. 子设备相互之间可能有时序关系,不定的加载顺序,可能带来有些时候设备能工作,有些时候又不能工作
+4. 现在编kernel是多线程编译的,编译的前后顺序也会影响驱动的加载顺序.
+
+这时就需要有一个统一管理的机制, 将所有设备统合起来, 按照一个统一的顺序加载,
+Display-subsystem正是用来解决这个问题的, 依赖于component的驱动, 通过这个驱动,
+可以把所有的设备以组件的形式加在一起, 等所有的组件加载完毕后, 统一进行bind/unbind.
+
+代码路径 `drivers/base/component.c`
+
+以下为rockchip drm master probe阶段component 主要逻辑, 为了减小篇幅, 去掉了无关的代码:
+```
+static int rockchip_drm_platform_probe(struct platform_device *pdev)
+{
+    for (i = 0;; i++) {
+        /* ports指向了vop的设备节点 */
+        port = of_parse_phandle(np, "ports", i);
+        component_match_add(dev, &match, compare_of, port->parent);
+    }
+    for (i = 0;; i++) {
+        port = of_parse_phandle(np, "ports", i);
+        /* 搜查port下的各个endpoint, 将它们也加入到match列表 */
+        rockchip_add_endpoints(dev, &match, port);
+    }
+    return component_master_add_with_match(dev, &rockchip_drm_ops, match);
+}
+
+static void rockchip_add_endpoints(...)
+{
+    for_each_child_of_node(port, ep) {
+        remote = of_graph_get_remote_port_parent(ep);
+            /* 这边的remote即为和vop关联的输出设备, 即为edp, mipi或hdmi */
+        component_match_add(dev, match, compare_of, remote);
+    }
+}
+```
+
+## 启动过程
+图自 markyzq gitbook:
+![](http://ww1.sinaimg.cn/large/ba061518ly1fky11y98n8j20fo0krtao.jpg)
+
+基于 component 框架，在 probe 阶段
+1. 解析 dts 中各个设备的信息
+2. 加到 component match 列表中
+3. 设备加载完毕后，master 设备进行 bind
+
+
+## RK DRM Device Driver
+### device tree
+```
+display_subsystem: display-subsystem {
+    compatible = "rockchip,display-subsystem";
+    ports = <&vopl_out>, <&vopb_out>;
+    status = "disabled";
+};
+
+- compatible: Should be "rockchip,display-subsystem"
+- ports: Should contain a list of phandles pointing to display interface port
+  of vop devices. vop definitions as defined in
+  kernel/Documentation/devicetree/bindings/display/rockchip/rockchip-vop.txt
+
+```
+### drm driver
+代码路径
+```
+drivers/gpu/drm/rockchip/rockchip_drm_drv.c
+drivers/gpu/drm/rockchip/rockchip_drm_drv.h
+```
+```
+static struct drm_driver rockchip_drm_driver = {
+    .driver_features    = DRIVER_MODESET | DRIVER_GEM |
+                  DRIVER_PRIME | DRIVER_ATOMIC |
+                  DRIVER_RENDER,
+    .preclose        = rockchip_drm_preclose,
+    .lastclose        = rockchip_drm_lastclose,
+    .get_vblank_counter    = drm_vblank_no_hw_counter,
+    .open            = rockchip_drm_open,
+    .postclose        = rockchip_drm_postclose,
+    .enable_vblank        = rockchip_drm_crtc_enable_vblank,
+    .disable_vblank        = rockchip_drm_crtc_disable_vblank,
+    .gem_vm_ops        = &rockchip_drm_vm_ops,
+    .gem_free_object    = rockchip_gem_free_object,
+    .dumb_create        = rockchip_gem_dumb_create,
+    .dumb_map_offset    = rockchip_gem_dumb_map_offset,
+    .dumb_destroy        = drm_gem_dumb_destroy,
+    .prime_handle_to_fd    = drm_gem_prime_handle_to_fd,
+    .prime_fd_to_handle    = drm_gem_prime_fd_to_handle,
+    .gem_prime_import    = drm_gem_prime_import,
+    .gem_prime_export    = drm_gem_prime_export,
+    .gem_prime_get_sg_table    = rockchip_gem_prime_get_sg_table,
+    .gem_prime_import_sg_table    = rockchip_gem_prime_import_sg_table,
+    .gem_prime_vmap        = rockchip_gem_prime_vmap,
+    .gem_prime_vunmap    = rockchip_gem_prime_vunmap,
+    .gem_prime_mmap        = rockchip_gem_mmap_buf,
+#ifdef CONFIG_DEBUG_FS
+    .debugfs_init        = rockchip_drm_debugfs_init,
+    .debugfs_cleanup    = rockchip_drm_debugfs_cleanup,
+#endif
+    .ioctls            = rockchip_ioctls,
+    .num_ioctls        = ARRAY_SIZE(rockchip_ioctls),
+    .fops            = &rockchip_drm_driver_fops,
+    .name    = DRIVER_NAME,
+    .desc    = DRIVER_DESC,
+    .date    = DRIVER_DATE,
+    .major    = DRIVER_MAJOR,
+    .minor    = DRIVER_MINOR,
+};
+```
+
+### vop driver
+代码路径：
+```
+drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+drivers/gpu/drm/rockchip/rockchip_vop_reg.c
+```
+结构体：
+```
+struct vop;
+// vop 驱动根结构, 一个vop对应一个struct vop结构
+
+struct vop_win;
+// 描述图层信息, 一个硬件图层对应一个struct vop_win结构
+```
+
+寄存器读写：
+为了兼容各种不同版本的vop, vop驱动里面使用了寄存器级的抽象, 由一个结构体来保存抽象关系, 这样主体逻辑只需要操作抽象后的功能定义, 由抽象的读写接口根据抽象关系写到真实的vop硬件中.
+
+示例:
+```
+  static const struct vop_win_phy rk3288_win23_data = {
+       .enable = VOP_REG(RK3288_WIN2_CTRL0, 0x1, 4),
+  }
+  static const struct vop_win_phy rk3368_win23_data = {
+       .enable = VOP_REG(RK3368_WIN2_CTRL0, 0x1, 4),
+  }
+```
+rk3368和rk3288图层的地址分布不同, 但在结构定义的时候, 可以将不同的硬件图层bit
+映射到同一个enable功能上, 这样vop驱动主体调用`VOP_WIN_SET(vop, win, enable, 1);`
+时就能操作到真实的vop寄存器了.
+
+
+
 
 ### 2.1 设备文件 cardX
 DRM 处于内核空间，这意味着用户空间需要通过系统调用来申请它的服务。
@@ -46,6 +197,64 @@ if (ret) {
 bo->handle = arg.handle;
 bo->size = arg.size;
 bo->pitch = arg.pitch;
+```
+
+#### 2.2.3 映射物理内存
+```
+struct drm_mode_map_dumb arg;
+void *map;
+int ret;
+
+memset(&arg, 0, sizeof(arg));
+arg.handle = bo->handle;
+ret = drmIoctl(fd, DRM_IOCTL_MODE_MAP_DUMB, &arg);
+if (ret)
+    return ret;
+map = drm_mmap(0, bo->size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, arg.offset);
+if (map == MAP_FAILED)
+   return -EINVAL;
+bo->ptr = map
+```
+
+#### 2.2.4 解除物理内存映射
+```
+drm_munmap(bo->ptr, bo->size);
+bo->ptr = NULL;
+```
+
+#### 2.2.5 释放内存
+```
+struct drm_mode_destroy_dumb arg;
+int ret;
+
+memset(&arg, 0, sizeof(arg));
+arg.handle = bo->handle;
+ret = drmIoctl(bo->fd, DRM_IOCTL_MODE_DESTROY_DUMB, &arg);
+if (ret)
+    fprintf(stderr, "failed to destroy dumb buffer: %s\n", strerror(errno));
+```
+
+#### 2.2.6 释放 gem handle
+```
+struct drm_gem_close args;
+memset(&args, 0, sizeof(args));
+args.handle = bo->handle;
+drmIoctl(bo->fd, DRM_IOCTL_GEM_CLOSE, &args);
+```
+
+#### 2.2.7 export dmafd
+```
+int export_dmafd;
+ret = drmPrimeHandleToFD(bo->fd, bo->handle, 0, &export_dmafd);
+// drmPrimeHandleToFD是会给dma_buf加引用计数的
+// 使用完export_dmafd后, 需要使用  close(export_dmafd)来减掉引用计数
+```
+
+#### 2.2.8 import dmafd
+```
+ret = drmPrimeFDToHandle(bo->fd, import_dmafd, &bo->handle);
+// drmPrimeHandleToFD是会给dma_buf加引用计数的
+// 使用完bo->handle后, 需要对handle减引用, 参看free gem handle部分.
 ```
 
 
