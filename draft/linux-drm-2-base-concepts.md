@@ -17,6 +17,9 @@
 * Connector
 * Display Device(LCD)
 
+然后我们会介绍一下 DRM 的一些特性。
+
+最后再用较少的篇幅为大家介绍一下 RK 平台 DRM Driver 所依赖的 Component Framework。
 
 ## 二、DRM 涉及的基本概念
 
@@ -118,13 +121,40 @@ Connectors: 连接器表示显示控制器从要显示的扫描输出操作发�
 (VGA, DVI, FPD-Link, HDMI, DisplayPort, S-Video ...) 他会连接将一个物理显示输出设备 (monitor, laptop panel, ...) 。
 与当前物理连接的输出设备相关的信息（如连接状态，EDID数据，DPMS状态或支持的视频模式）也存储在连接器内。
 
-Encoders: 显示控制器必须使用适合于预期连接器的格式 对 来自CRTC的视频模式定时信号 进行编码。编码器代表能够执行其中一个编码的硬件块。 连接器一次只能从一个编码器接收信号，每种类型的连接器只支持一些编码。 还可能会有其他的物理限制，并不是每个CRTC连接到每个可用的编码器，限制了CRTC编码器连接器的可能组合。
+Encoders: 显示控制器必须使用适合于预期连接器的格式 对 来自CRTC的视频模式定时信号 进行编码。编码器代表能够执行其中一个编码的硬件块。 连接器一次只能从一个编码器接收信号，每种类型的连接器只支持一些编码。还可能会有其他的物理限制，并不是每个CRTC连接到每个可用的编码器，限制了CRTC编码器连接器的可能组合。
 
-Planes: plane 不是硬件块，而是包含供给扫描引擎（CRTC）的缓冲器的内存对象。 保存帧缓冲区的平面称为主平面，每个CRTC必须有一个关联的，因为它是 CRTC 确定参数的来源。参数包括，视频模式 - 显示分辨率（宽和高），像素大小，像素格式，刷新率等。
+Planes: plane 不是硬件块，而是包含供给扫描引擎（CRTC）的缓冲器的内存对象。 保存帧缓冲区的平面称为主平面，每个CRTC必须有一个关联的 plane ，因为它是 CRTC 确定参数的来源。参数包括，视频模式 - 显示分辨率（宽和高），像素大小，像素格式，刷新率等。
 
+
+## 四、component 框架
+RK 平台的 DRM 还依赖了 component 框架。
+下面是内核邮件列表中关于 RK Socs DRM Driver Patch 的讨论：`https://lkml.org/lkml/2014/12/2/161`
+
+在邮件开头我们可以看到 RK 平台 DRM Driver 诞生依赖 15 个版本中的主要变化。
+其中有提到很重要的一点是其采用了 component 框架。
+
+因为 DRM 下挂载了很多的设备，启动顺序可能会引发问题：
+
+1. 驱动因为等待另一个资源的准备，产生 probe deferral 导致顺序不定。
+2. 子设备没有加载好，主设备就加载了，导致设备无法工作。
+3. 子设备相互之间可能有时序关系,不定的加载顺序,可能带来有些时候设备能工作,有些时候又不能工作。
+4. 现在编 kernel 是多线程编译的,编译的前后顺序也会影响驱动的加载顺序。
+
+对于 RK 平台因为有用到多个 VOP，需要在所有 VOP 都启动后再开启 DRM Driver 的 probe，即推迟 probe。
+
+此时需要一个统一的管理机制，将所有设备统合起来按统一顺序进行加载，等所有组件加载完毕后，在进行他们和 master 的 bind。
+
+更详细的关于介绍 component 的文章可以参考 component 作者与其他人讨论 component framework 的过程： `https://patchwork.kernel.org/patch/3431851/`
+
+我们对 component 的接触会止步于 drm master probe 中的component 部分。我们将在下章分析 drm driver 代码中单独用一节分析在 rockchip drm master probe 中 component 的主要逻辑。
 
 ## 参考文章
+```
 wikipedia drm：https://en.wikipedia.org/wiki/Direct_Rendering_Manager
 landley drm：http://www.landley.net/kdocs/htmldocs/drm.html
 ubuntu drm kms：http://manpages.ubuntu.com/manpages/zesty/en/man7/drm-kms.7.html
+https://lkml.org/lkml/2014/12/2/161
+https://patchwork.kernel.org/patch/3431851/
+```
+
 
