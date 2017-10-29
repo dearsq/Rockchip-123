@@ -1,4 +1,4 @@
-# Linux 下的 DRM（一）Display Server 历史
+# Linux DRM（一）Display Server 历史
 
 ## 一、Display Server
 
