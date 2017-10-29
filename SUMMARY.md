@@ -20,11 +20,11 @@
   * [Linux 下音频调试（一）工具介绍](device-porting/audio/linux-audio-debug-1-tools.md)
   * [Linux 下音频调试（二）调试流程](device-porting/audio/linux-audio-debug-2-sop.md)
 * [DRM](device-porting/drm.md)
-  * [Linux DRM \(一\) Display Server 历史](draft/rk-drm-1-display-server-history.md)
-  * [Linux DRM \(二\) 基本概念](draft/linux-drm-2-base-concepts.md)
+  * [Linux DRM \(一\) Display Server 历史](device-porting/drm/linux-drm-1-display-server-history.md)
+  * [Linux DRM \(二\) 基本概念](device-porting/drm/linux-drm-2-base-concepts.md)
 * [PCIe](device-porting/pcie.md)
   * [mini PCIe  转 SATA 小板\(ASM1061\)调试](device-porting/pcie/minipcie-sata-porting.md)
-  * [PCIe 驱动分析](pcie/pcie-drivers.md)
+  * [PCIe 驱动分析](device-porting/pcie/pcie-drivers.md)
 
 ## Device Debug
 
