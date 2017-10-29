@@ -22,13 +22,15 @@
 
 ![](http://ww1.sinaimg.cn/large/ba061518ly1fkx39mievyj20o5092gmf.jpg)
 
+记住这张图~
 
+让我们一起关注一下绿色方框中的五个 Block。
 
 ### 2.1 DRM Framebuffer 
 它是一块内存区域，我把它理解为一块画布，驱动和应用层都能访问它。画画之前需要将它格式化，我们需要设定你要画油画还是国画（色彩模式，比如 RGB24，YUV 等），画布需要多大（分辨率）。
 
 ### 2.2 CRTC
-直译为 阴极摄像管上下文。我要说它的作用是读取当前扫描缓冲区的像素数据并借助于PLL电路从其生成视频模式定时信号。你可能就开始嘟囔着抱怨听不懂了。简单点，说话的方式简单点，简单的来说他就是显示输出的上下文，我把它理解为扫描仪。它对内连接 Framebuffer 地址，对外连接 Encoder。
+直译为 阴极摄像管上下文。我要说它的作用是读取当前扫描缓冲区的像素数据并借助于PLL电路从其生成视频模式定时信号。你可能就开始嘟囔着抱怨什么鬼了。简单点，说话的方式简单点，简单的来说他就是显示输出的上下文，我把它理解为扫描仪。它对内连接 Framebuffer 地址，对外连接 Encoder。
 它会扫描你画布（Framebuffer）上的内容，叠加上 Planes 的内容，传给 Encoder。
 
 ### 2.3 Planes
@@ -46,7 +48,6 @@
 ### 2.5 Connector
 直译为 连接器。Connector 常常对应于物理连接器 (VGA, DVI, FPD-Link, HDMI, DisplayPort, S-Video ...) 他会连接将一个物理显示输出设备 (monitor, laptop panel, ...) 。
 与当前物理连接的输出设备相关的信息（如连接状态，EDID数据，DPMS状态或支持的视频模式）也存储在 Connector 内。
-
 
 
 ## 三、DRM 中的特性
@@ -106,8 +107,7 @@ Kernel Mode Setting
 #### 3.2.4 KMS Device Mode
 
 KMS 负责塑造和管理输出设备，将他们抽象为一系列的硬件模块（这些硬件模块常常会在显示控制器的显示输出管道上）。
-这些模块我们前面都有介绍，CRTC、Planes、Encoder、Connector 。
-下面是 Wikipedia 上面的谷歌翻译版本：
+这些模块我们前面都有介绍，CRTC、Planes、Encoder、Connector 。但是当时介绍的比较通俗，下面是 Wikipedia 上面的谷歌翻译版本：
 
 CRTCs：每个 CRTC（来自 CRT 控制器）代表显示控制器的扫描引擎，指向 framebuffer。 CRTC 的目标是读取当前扫描缓冲区的像素数据并借助于PLL电路从其生成视频模式定时信号。
 CRTC 的数量决定了硬件可以同时处理多少个独立的输出设备，因此为了使用多头配置，每个显示设备至少需要一个 CRTC。
