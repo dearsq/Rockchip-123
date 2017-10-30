@@ -336,8 +336,6 @@ debug> sysrq m
 [  926.782160] 30267 pages reserved
 
 ```
-show-registers(p) show-all-timers(q) unraw(r) sync(s) show-task-states(t) unmount(u) force-fb(V) show-blocked-tasks(w) dump-ftrace-buffer(z)  
-
 
 ### n 使用 nice 优化所有实时任务
 使用 nice 优化 cpu 分配到不同进程时间片的多少
