@@ -29,6 +29,8 @@
 
 ## Device Debug
 
+* [RK FIQ 调试模式](device-debug/rockchip-fiq-debugger.md)
+
 ## Tips of Laguage
 
 ## Tips of Linux

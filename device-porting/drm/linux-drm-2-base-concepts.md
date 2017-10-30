@@ -1,4 +1,4 @@
-# Linux DRM (二) 基本概念和特性
+# Linux DRM（二）基本概念和特性
 
 在《Linux DRM (一) Display Server》我们了解了 DRM 诞生的历史缘由。
 本篇我们朝着 DRM 本尊再走几步，先介绍几个 DRM 的基本概念。
@@ -128,7 +128,7 @@ Planes: plane 不是硬件块，而是包含供给扫描引擎（CRTC）的缓�
 
 ## 四、component 框架
 RK 平台的 DRM 还依赖了 component 框架。
-下面是内核邮件列表中关于 RK Socs DRM Driver Patch 的讨论：`https://lkml.org/lkml/2014/12/2/161`
+下面是内核邮件列表中关于 RK Socs DRM Driver Patch 的讨论：https://lkml.org/lkml/2014/12/2/161
 
 在邮件开头我们可以看到 RK 平台 DRM Driver 诞生依赖 15 个版本中的主要变化。
 其中有提到很重要的一点是其采用了 component 框架。
@@ -144,17 +144,16 @@ RK 平台的 DRM 还依赖了 component 框架。
 
 此时需要一个统一的管理机制，将所有设备统合起来按统一顺序进行加载，等所有组件加载完毕后，在进行他们和 master 的 bind。
 
-更详细的关于介绍 component 的文章可以参考 component 作者与其他人讨论 component framework 的过程： `https://patchwork.kernel.org/patch/3431851/`
+更详细的关于介绍 component 的文章可以参考 component 作者与其他人讨论 component framework 的过程： https://patchwork.kernel.org/patch/3431851/
 
 我们对 component 的接触会止步于 drm master probe 中的component 部分。我们将在下章分析 drm driver 代码中单独用一节分析在 rockchip drm master probe 中 component 的主要逻辑。
 
 ## 参考文章
-```
+
 wikipedia drm：https://en.wikipedia.org/wiki/Direct_Rendering_Manager
 landley drm：http://www.landley.net/kdocs/htmldocs/drm.html
 ubuntu drm kms：http://manpages.ubuntu.com/manpages/zesty/en/man7/drm-kms.7.html
 https://lkml.org/lkml/2014/12/2/161
 https://patchwork.kernel.org/patch/3431851/
-```
 
 
