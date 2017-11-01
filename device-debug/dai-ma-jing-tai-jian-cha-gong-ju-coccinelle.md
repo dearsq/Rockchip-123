@@ -1,4 +1,5 @@
-# Coccinelle 代码静态检查工具
+# Coccinelle 程序匹配转换引擎
+
 ## 介绍
 Coccinelle是一个程序匹配和转换引擎，它使用 SmPL 语言（语义包语言）来为 C 代码提供匹配和转换代码的功能。
 
