@@ -20,8 +20,8 @@
   * [Linux 下音频调试（一）工具介绍](device-porting/audio/linux-audio-debug-1-tools.md)
   * [Linux 下音频调试（二）调试流程](device-porting/audio/linux-audio-debug-2-sop.md)
 * [DRM](device-porting/drm.md)
-  * [Linux DRM \(一\) Display Server 历史](device-porting/drm/linux-drm-1-display-server-history.md)
-  * [Linux DRM \(二\) 基本概念](device-porting/drm/linux-drm-2-base-concepts.md)
+  * [Linux DRM \(一\) Display Server](device-porting/drm/linux-drm-1-display-server-history.md)
+  * [Linux DRM \(二\) 基本概念和特性](device-porting/drm/linux-drm-2-base-concepts.md)
   * [Linux DRM \(三\) RK 平台 DRM 代码分析](device-porting/drm/linux-drm-3-rk-drm-driver.md)
 * [PCIe](device-porting/pcie.md)
   * [mini PCIe  转 SATA 小板\(ASM1061\)调试](device-porting/pcie/minipcie-sata-porting.md)
@@ -32,7 +32,7 @@
 * [RK FIQ 调试模式](device-debug/rockchip-fiq-debugger.md)
 * [RK CLK 查看与操作](device-debug/rockchip-clock-ops.md)
 * [Coccinelle 程序匹配转换引擎](device-debug/coccinelle.md)
-* Smatch 代码静态检查
+* [Smatch 代码静态检查](device-debug/smatch.md)
 
 ## Tips of Laguage
 

@@ -1,4 +1,23 @@
-# Linux DRM 代码分析
+# Linux DRM（三）代码分析
+
+本篇是 DRM 的第三篇文章。
+在 《Linux DRM (一) Display Server》 中我们了解了 DRM  诞生的历史。
+在 《Linux DRM (二) 基本概念和特性》 中我们了解了一些基本的概念。
+现在，我们终于要向 DRM 源码进军了。
+
+## 一、概览
+
+不知大家是否还记得，之前我有引用 Wiki 中对 DRM 的介绍，这里我们再回顾一下：
+DRM 由两个部分组成：
+一是 Kernel 的子系统，这个子系统对硬件 GPU 操作进行了一层框架封装。
+二是 提供了一个 libdrm 库，里面封装了一系列 API，用来进行图像显示。
+整体来看和 Android 上所采用的 Direct Frame Buffer 差不多。
+Android Kernel 走的是 FB 的框架，并在 HAL 抽象出一个 FBDEV，来进行 FB IOCTL 统一管理。
+DRM 就相当于直接对图形设备集中处理，并且多出了一个 libdrm 库。
+
+其整体脉络如下：
+
+![](http://ww1.sinaimg.cn/large/ba061518gy1fl2l3bdc2kj20ib0fvjtt.jpg)
 
 ## 源码文件
 
