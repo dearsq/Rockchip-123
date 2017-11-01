@@ -30,6 +30,8 @@
 ## Device Debug
 
 * [RK FIQ 调试模式](device-debug/rockchip-fiq-debugger.md)
+* [RK CLK 查看与操作](device-debug/rockchip-clock-ops.md)
+* [代码静态检查工具 Coccinelle](device-debug/dai-ma-jing-tai-jian-cha-gong-ju-coccinelle.md)
 
 ## Tips of Laguage
 
