@@ -31,7 +31,8 @@
 
 * [RK FIQ 调试模式](device-debug/rockchip-fiq-debugger.md)
 * [RK CLK 查看与操作](device-debug/rockchip-clock-ops.md)
-* [Coccinelle 程序匹配转换引擎](device-debug/dai-ma-jing-tai-jian-cha-gong-ju-coccinelle.md)
+* [Coccinelle 程序匹配转换引擎](device-debug/coccinelle.md)
+* Smatch 代码静态检查
 
 ## Tips of Laguage
 
